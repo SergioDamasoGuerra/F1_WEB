@@ -1,0 +1,55 @@
+header {
+  font-family: fantasy;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+  background-color: #fa3232;
+  min-height: 150px;
+}
+
+#logo-header{
+  height: 120px;
+  width: auto;
+}
+
+#user-header{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+#user-header-img{
+  max-height: 80px;
+  width: auto;
+  border-radius: 50%;
+}
+
+nav{
+  display: flex;
+}
+
+nav ul{
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar{
+  display: inline-block;
+  padding: 5px 30px;
+  border-left: 2px solid white;
+  font-size: 30px;
+  transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  color: white;
+}
+#navbar-last{
+  border-right: 2px solid white;
+}
+.navbar:hover{
+    transform: scale(1.05);
+    color: #000000;
+}

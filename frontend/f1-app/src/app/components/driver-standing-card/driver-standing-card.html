@@ -1,0 +1,20 @@
+<article (click)="selectItem()" [class.selected]="selected">
+  <p id="standing-position">
+    {{item.position_current}}
+  </p>
+
+  @if('driver_number' in item){
+    <p id="standing-name">
+      {{item.name}}, {{item.driver_number}}
+    </p>
+  }
+
+  <p>
+    {{item.team_name}}
+  </p>
+
+  <p id="standing-points">
+    {{item.points_current}}
+  </p>
+
+</article>

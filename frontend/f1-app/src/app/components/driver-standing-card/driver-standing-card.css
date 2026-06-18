@@ -1,0 +1,21 @@
+article{
+  display: flex;
+  min-width: 600px;
+  gap: 1rem;
+  border: black solid 1px;
+  padding: 5px;
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+article.selected {
+  border: gold solid 3px;
+}
+
+#standing-position{
+  font-weight: bold;
+}
+
+#standing-points{
+  font-weight: bold;
+  margin-left: auto;
+}

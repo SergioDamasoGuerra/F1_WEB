@@ -1,0 +1,13 @@
+<body>
+<h1 class="fancy">Season Calendar</h1>
+
+<section id="events-list">
+  @for(event of events(); track event.id){
+    <app-event-card
+      [event]="event"
+      [id]="'event-' + event.id">
+    </app-event-card>
+  }
+</section>
+</body>
+

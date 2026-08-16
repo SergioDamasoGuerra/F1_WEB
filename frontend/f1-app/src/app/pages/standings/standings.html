@@ -1,31 +1,30 @@
 <div id="main-container">
   <div class="standings" id="driver-standings">
-    <h2 class="standings-title">Drivers standings</h2>
+    <h2 class="standings-title">DRIVERS STANDINGS</h2>
     <div class="standings-header">
-      <p>Pos.</p>
-      <p>Driver</p>
+      <p>Pos. Driver</p>
       <p id="standings-header-pts">Pts.</p>
     </div>
     <!-- <div class="standings-content"> -->
-      @for (driver of drivers(); track driver.driver_number) {
+      @for (driver of drivers(); track driver.driverNumber) {
         <app-driver-standing-card
           [item]="driver"
           (selectedDriver)="selectDriver($event)"
           [selected]="isItemSelected(driver)"
-          [style.background]="driver.team_color">
+          [style.background]="driver.teamColor">
         </app-driver-standing-card>
       }
     <!-- </div> -->
   </div>
   <div class="standings" id="constructor-standings">
-    <h2 class="standings-title">Constructor standings</h2>
+    <h2 class="standings-title">CONSTRUCTORS STANDINGS</h2>
     <div class="standings-header">
       <p>Pos.</p>
       <p>Team</p>
       <p id="standings-header-pts">Pts.</p>
     </div>
     <!-- <div class="standings-content"> -->
-      @for (team of teams(); track team.team_name) {
+      @for (team of teams(); track team.name) {
         <app-driver-standing-card
           [item]="team"
           (selectedTeam)="selectTeam($event)"
@@ -65,13 +64,13 @@
         <div class="comp-selected-col">
           <p class="comp-selected-title">TEAM 1:</p>
           @if(selectedTeams().length > 0){
-            <p class="comp-selected-item">{{selectedTeams()[0].team_name}}</p>
+            <p class="comp-selected-item">{{selectedTeams()[0].name}}</p>
           }
         </div>
         <div class="comp-selected-col">
           <p class="comp-selected-title">TEAM 2:</p>
           @if(selectedTeams().length > 1){
-            <p class="comp-selected-item">{{selectedTeams()[1].team_name}}</p>
+            <p class="comp-selected-item">{{selectedTeams()[1].name}}</p>
           }
         </div>
       </div>

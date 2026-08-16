@@ -1,0 +1,98 @@
+<div class="auth-card">
+
+  <!-- 1. Switch arriba para anclar la vista -->
+  <div class="switch-container">
+    <button
+      [class.active]="isLoginMode()"
+      (click)="toggleMode(true)">
+      Log-In
+    </button>
+    <button
+      [class.active]="!isLoginMode()"
+      (click)="toggleMode(false)">
+      Sign-In
+    </button>
+  </div>
+
+  @if(isLoginMode()){
+    <form (ngSubmit)="onLogin()" class="form-fade">
+      <h2>Hello Again! Log-In</h2>
+
+      <div class="form-inputs">
+        <div class="input-group">
+          <label for="login-email">E-mail</label>
+          <input
+            id="login-email" type="email"
+            placeholder="Enter your email"
+            autocomplete="email" required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="login-password">Password</label>
+          <input
+            id="login-password" type="password"
+            placeholder="Enter your password"
+            autocomplete="current-password" required
+          />
+        </div>
+
+        <!-- Elementos extras que equilibran el alto del Login -->
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" /> Remember me
+          </label>
+          <a href="#" class="forgot-pass">Forgot password?</a>
+        </div>
+      </div>
+
+      <button type="submit" class="login-btn">Log In</button>
+    </form>
+  }@else{
+    <form (ngSubmit)="onRegister()" class="form-fade">
+      <h2>Create your account!</h2>
+
+      <div class="form-inputs">
+        <div class="input-group">
+          <label for="fullname">Full Name</label>
+          <input
+            id="fullname" type="text"
+            placeholder="e.g. James Walker"
+            autocomplete="name" required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="reg-email">E-mail</label>
+          <input
+            id="reg-email" type="email"
+            placeholder="e.g. jameswalker10@gmail.com"
+            autocomplete="email" required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="reg-password">Password</label>
+          <input
+            id="reg-password" type="password"
+            placeholder="Create a safe password"
+            autocomplete="new-password" required
+          />
+          <small class="help-text">Min: x8 chars, x1 uppercase, x1 digit, x1 symbol</small>
+        </div>
+
+        <div class="input-group">
+          <label for="re-password">Confirm Password</label>
+          <input
+            id="re-password" type="password"
+            placeholder="Repeat the password"
+            autocomplete="new-password" required
+          />
+        </div>
+      </div>
+
+      <button type="submit" class="login-btn">Create account</button>
+    </form>
+  }
+</div>
+

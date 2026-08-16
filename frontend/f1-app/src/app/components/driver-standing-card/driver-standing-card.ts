@@ -17,7 +17,7 @@ export class DriverStandingCard {
   @Output() selectedTeam = new EventEmitter<Team>();
 
   selectItem() {
-    if ('driver_number' in this.item) {
+    if ('driverNumber' in this.item) {
       this.selectedDriver.emit(this.item);
     } else {
       this.selectedTeam.emit(this.item);

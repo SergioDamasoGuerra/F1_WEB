@@ -7,4 +7,10 @@ import { RouterLink } from '@angular/router';
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
-export class Header {}
+export class Header {
+  f1LiveMenuOpen = false;
+
+  toggleF1LiveMenu() {
+    this.f1LiveMenuOpen = !this.f1LiveMenuOpen;
+  }
+}

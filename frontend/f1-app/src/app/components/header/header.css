@@ -12,6 +12,9 @@ header {
 #logo-header{
   height: 120px;
   width: auto;
+  border-radius: 15px;
+  corner-shape: bevel;
+  border: 5px solid black;
 }
 
 #user-header{
@@ -52,4 +55,29 @@ nav ul{
 .navbar:hover{
     transform: scale(1.05);
     color: #000000;
+}
+
+
+/* MENU F1Live */
+
+.dropdown {
+  position: relative;
+}
+
+.side-menu {
+  top: 100%;
+  left: 0;
+
+  display: flex;
+  flex-direction: row;
+
+  background: white;
+  border-radius: 20px;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.side-menu a {
+  color: black;
+  font-size: 18px;
 }

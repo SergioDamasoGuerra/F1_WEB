@@ -1,6 +1,53 @@
 /* You can add global styles to this file, and also import other style files */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html, body, app-root {
+  height: 100%;
+  width: 100%;
+}
+
+.fancy-title {
+  --b: 6px;   /* control the border thickness */
+  --w: 80px;  /* control the width of the line*/
+  --g: 15px;  /* control the gap */
+  --c: #d30a0a;
+
+  width: fit-content;
+  padding: 0 1em;
+  line-height: 1.6em;
+  color: #fff;
+  background:
+    conic-gradient(from   45deg at left ,var(--c) 25%,#0000 0) 0,
+    conic-gradient(from -135deg at right,var(--c) 25%,#0000 0) 100%;
+  background-size: 51% 100%;
+  background-repeat: no-repeat;
+  border-image:
+    linear-gradient(
+      #0000      calc(50% - var(--b)/2),
+      var(--c) 0 calc(50% + var(--b)/2),
+      #0000    0)
+    1/0 var(--w)/calc(var(--w) + var(--g));
+  margin-inline: auto;
+}
+
+
+p {
+  font-size: 1.1rem;
+  text-align: justify;
+}
+h1 {
+  font-size: 2.3rem;
+}
+h2 {
+  font-size: 1.8rem;
+}
+
+
+body {
+  font-family: system-ui, sans-serif;
 }

@@ -1,10 +1,14 @@
+import { Team } from './team';
+
 export interface Driver {
-  driver_number: number;
+  id: number;
+  driverNumber: number;
   name: string;
-  acronym?: string;
-  team_name: string;
-  team_color: string;
-  points_current: number;
-  position_current: number;
-  image: string;
+  acronym: string;
+  points: number;
+  position: number;
+  imageUrl?: string;
+  teamId: number;
+  team?: Team; // Se incluye cuando usas include: { team: true } en Express
+  teamColor?: string;
 }

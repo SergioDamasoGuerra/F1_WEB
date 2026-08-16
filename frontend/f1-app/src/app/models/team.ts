@@ -1,9 +1,20 @@
+import {Driver} from './driver'
+
 export interface Team {
-  meeting_key: number;
-  points_current: number;
-  points_start: number;
-  position_current: number;
-  position_start: number;
-  session_key: number;
-  team_name: string;
+  id: number;
+  name: string;
+  points: number;
+  position: number;
+  drivers?: Driver[];
 }
+
+/*  PRISMA:
+
+model Team {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  points   Float
+  position Int
+  drivers  Driver[]
+}
+ */

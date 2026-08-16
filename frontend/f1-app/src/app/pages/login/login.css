@@ -1,0 +1,116 @@
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #f4f5f7;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem 2rem;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e1e4e8;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.form-fade {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.input-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-inputs input {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.help-text {
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.forgot-pass {
+  color: #4967f6;
+  text-decoration: none;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: #4967f6;
+  color: white;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.switch-container {
+  display: flex;
+  background: #eef0f4;
+  padding: 4px;
+  border-radius: 8px;
+  gap: 4px;
+}
+
+.switch-container button {
+  flex: 1;
+  padding: 0.5rem;
+  border: none;
+  background: transparent;
+  color: #555;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.switch-container button.active {
+  background-color: #ffffff;
+  color: #4967f6;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}

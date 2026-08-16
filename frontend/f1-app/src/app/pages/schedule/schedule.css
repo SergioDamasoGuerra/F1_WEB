@@ -1,0 +1,12 @@
+body{
+  padding: 50px 100px;
+}
+
+#events-list{
+  padding-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+

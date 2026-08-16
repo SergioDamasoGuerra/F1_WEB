@@ -1,0 +1,58 @@
+@if(event){
+  <article class="event-card" [ngClass]="'status-' + event.status">
+
+    @if(event.isCancelled){
+      <p class="cancelled">✖️ CANCELLED ✖️</p>
+    }
+
+    <section class="event-card-content">
+
+      <div class="event-card-content-left">
+
+        @if(event.circuit){
+          <img
+            class="circuit-image"
+            [src]="event.circuit.imageUrl"
+            [alt]="event.circuit.name"
+          >
+        }
+
+        <div class="event-card-center">
+
+          <div class="event-header">
+            @if(event.country){
+              <img
+                class="country-image"
+                [src]="event.country.flagUrl"
+                [alt]="event.country.name"
+              >
+            }
+
+            <span>{{ event.name }}</span>
+            @if(event.circuit){
+              <span>Circuit: {{ event.circuit.name }}</span>
+            }
+          </div>
+
+          <div class="event-info">
+            <span class="event-status">{{ capitalizeText(event.status) }}</span>
+            <span class="event-dates">
+              {{ event.dateStart | date:'dd MMM' | uppercase }}-
+              {{ event.dateEnd | date:'dd MMM' | uppercase }}
+            </span>
+          </div>
+
+        </div>
+      </div>
+
+      <a [routerLink]="['/event', event.id]" class="see-event">
+        See Event
+      </a>
+
+    </section>
+  </article>
+}
+@else {
+  <p>Event not loaded.</p>
+}
+

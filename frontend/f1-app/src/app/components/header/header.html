@@ -5,7 +5,15 @@
 
   <nav>
     <ul>
-      <li><a class="navbar" routerLink="/f1live">F1 Live</a></li>
+      <li>
+        <a class="navbar" (click)="toggleF1LiveMenu()"> F1 Live @if(!f1LiveMenuOpen){▶}@else{◀} </a>
+      </li>
+      @if(f1LiveMenuOpen) {
+        <div class="side-menu">
+          <li><a class="navbar" routerLink="/standings" (click)="f1LiveMenuOpen = false">Standings</a></li>
+          <li><a class="navbar" routerLink="/schedule" (click)="f1LiveMenuOpen = false">Schedule</a></li>
+        </div>
+      }
       <li><a class="navbar" routerLink="/forums">Forums</a></li>
       <li><a class="navbar" id="navbar-last" routerLink="/minigames">Minigames</a></li>
     </ul>

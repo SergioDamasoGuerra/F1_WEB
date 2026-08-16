@@ -1,0 +1,106 @@
+.event-card{
+  border-radius: 10px;
+  padding: 30px;
+  font-size: x-large;
+}
+
+.cancelled{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.event-card-content{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start
+}
+
+.circuit-image{
+  width: 300px;
+  height: auto;
+  border: 10px solid black;
+  border-radius: 20px;
+  background-color: white;
+}
+
+.country-image{
+  width: 100px;
+  height: auto;
+  border-radius: 10px;
+}
+
+.event-card-center{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.event-card-content-left{
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+}
+
+.event-header{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+}
+
+.event-header p{
+  font-size: x-large;
+}
+
+.event-info {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: center;
+  column-gap: 50px;
+}
+
+.event-status {
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 5px;
+  text-align: center;
+}
+
+.event-dates {
+  font-size: x-large;
+}
+
+.see-event{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
+  background-color: white;
+  border-radius: 10px;
+}
+
+
+
+/* Colores según estado */
+
+.event-card.status-done {
+  background-color: #626268;
+}
+
+.event-card.status-current {
+  background-color: #22c55e;
+}
+
+.event-card.status-upcoming {
+  background-color: #3b82f6;
+}
+
+.event-card.status-cancelled {
+  background-color: #ef4444;
+}
+

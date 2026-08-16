@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          Int          @id @default(autoincrement())
+  username    String       @unique
+  password    String
+  createdAt   DateTime     @default(now())
+  threads     Thread[]
+  messages    Message[]
+  likes       MessageLike[]
+  predictions Prediction[]
+}
+
+model Thread {
+  id        Int       @id @default(autoincrement())
+  title     String
+  authorId  Int
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  messages  Message[]
+}
+
+model Message {
+  id        Int           @id @default(autoincrement())
+  content   String
+  threadId  Int
+  thread    Thread        @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  authorId  Int
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime      @default(now())
+  likes     MessageLike[]
+}
+
+model MessageLike {
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messageId Int
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@id([userId, messageId])
+}
+
+model Team {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  points   Float
+  position Int
+  drivers  Driver[]
+}
+
+model Driver {
+  id            Int          @id @default(autoincrement())
+  driverNumber  Int          @unique
+  name          String
+  acronym       String
+  teamId        Int
+  team          Team         @relation(fields: [teamId], references: [id])
+  teamColor     String?
+  points        Float
+  position      Int
+  imageUrl      String?
+  p1Predictions Prediction[] @relation("P1Driver")
+  p2Predictions Prediction[] @relation("P2Driver")
+  p3Predictions Prediction[] @relation("P3Driver")
+}
+
+model Country {
+  id      Int     @id @default(autoincrement())
+  code    String  @unique
+  name    String
+  flagUrl String?
+  events  Event[]
+}
+
+model Circuit {
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  type     String?
+  imageUrl String?
+  infoUrl  String?
+  events   Event[]
+}
+
+model Event {
+  id           Int          @id @default(autoincrement())
+  name         String
+  officialName String
+  year         Int
+  dateStart    DateTime
+  dateEnd      DateTime
+  isCancelled  Boolean      @default(false)
+  status       String
+  countryId    Int
+  country      Country      @relation(fields: [countryId], references: [id])
+  circuitId    Int
+  circuit      Circuit      @relation(fields: [circuitId], references: [id])
+  predictions  Prediction[]
+
+  @@unique([name, year]) // <-- Clave compuesta única
+}
+
+model Prediction {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId        Int
+  event          Event    @relation(fields: [eventId], references: [id])
+  p1DriverId     Int
+  p1Driver       Driver   @relation("P1Driver", fields: [p1DriverId], references: [id])
+  p2DriverId     Int
+  p2Driver       Driver   @relation("P2Driver", fields: [p2DriverId], references: [id])
+  p3DriverId     Int
+  p3Driver       Driver   @relation("P3Driver", fields: [p3DriverId], references: [id])
+  pointsObtained Int      @default(0)
+  createdAt      DateTime @default(now())
+
+  @@unique([userId, eventId])
+}
+

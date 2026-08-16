@@ -1,0 +1,17 @@
+# IDE
+.idea/
+
+# Backend
+backend/node_modules/
+backend/.env
+backend/.env.*
+backend/.agents/
+backend/.claude/
+backend/.windsurf/
+backend/dist/
+
+# Frontend
+frontend/f1-app/node_modules/
+frontend/f1-app/.angular/
+frontend/f1-app/dist/
+

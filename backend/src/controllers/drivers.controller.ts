@@ -5,8 +5,12 @@ export const getDrivers = async (req: Request, res: Response) => {
     try{
         const drivers = await prisma.driver.findMany({
             include: {team:true},
-            orderBy: {position: 'asc'},
         });
+
+        drivers.sort((a, b) =>
+            (a.position ?? Infinity) - (b.position ?? Infinity)
+        );
+
         res.json(drivers);
     } catch(err){
         console.error('Error getting drivers:', err);

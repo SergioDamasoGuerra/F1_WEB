@@ -68,7 +68,7 @@ model Driver {
   team          Team         @relation(fields: [teamId], references: [id])
   teamColor     String?
   points        Float
-  position      Int
+  position      Int?
   imageUrl      String?
   p1Predictions Prediction[] @relation("P1Driver")
   p2Predictions Prediction[] @relation("P2Driver")

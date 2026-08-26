@@ -16,5 +16,12 @@ export function formatDateDDMMM(dateString: string): string {
   return `${day} ${month}`;
 }
 
+const formatter = new Intl.DateTimeFormat('en', {
+  day: '2-digit',
+  month: 'short',
+});
 
+export function formatRange(d1: Date, d2: Date): string {
+  return formatter.formatRange(d1, d2).toUpperCase();
+}
 

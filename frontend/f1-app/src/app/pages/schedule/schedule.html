@@ -1,13 +1,19 @@
-<body>
-<h1 class="fancy">Season Calendar</h1>
+<div id="schedule-container">
+  <section id="events-list">
+    <h1 class="fancy">Season Calendar</h1>
+    @for(event of events(); track event.id){
+      <app-event-card
+        [event]="event"
+        [id]="'event-' + event.id">
+      </app-event-card>
+    }
+  </section>
 
-<section id="events-list">
-  @for(event of events(); track event.id){
-    <app-event-card
-      [event]="event"
-      [id]="'event-' + event.id">
-    </app-event-card>
-  }
-</section>
-</body>
+  <app-week-calendar
+    [weeks]="weeks"
+    (eventSelected)="scrollToEvent($event)"
+  >
+  </app-week-calendar>
+</div>
+
 

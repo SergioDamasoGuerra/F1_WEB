@@ -2,6 +2,10 @@
   border-radius: 10px;
   padding: 30px;
   font-size: x-large;
+
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .cancelled{
@@ -13,7 +17,37 @@
 .event-card-content{
   display: flex;
   justify-content: space-between;
-  align-items: flex-start
+  align-items: flex-start;
+  gap: 50px;
+}
+
+.event-card-content-left{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+
+  flex: 1;
+  min-width: 0;
+}
+
+.event-card-center{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  flex: 1;
+  min-width: 0;
+}
+
+.event-header{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+  box-sizing: border-box;
 }
 
 .circuit-image{
@@ -30,36 +64,41 @@
   border-radius: 10px;
 }
 
-.event-card-center{
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.event-card-content-left{
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-  align-items: center;
-}
-
-.event-header{
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 20px;
-}
-
 .event-header p{
   font-size: x-large;
 }
 
 .event-info {
-  display: grid;
-  grid-template-columns: 150px 1fr;
+  display: flex;
   align-items: center;
-  column-gap: 50px;
+  justify-content: flex-start;
+  gap: 50px;
 }
+
+.breakable-name {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.breakable-name-word {
+  display: inline;
+}
+
+@media (max-width: 1400px) {
+  .breakable-name {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  .breakable-name-word {
+    display: block;
+  }
+}
+
 
 .event-status {
   background-color: #ffffff;
@@ -104,3 +143,47 @@
   background-color: #ef4444;
 }
 
+
+@media (max-width: 1500px) {
+  .circuit-name {
+    display: none;
+  }
+}
+
+@media (max-width: 1400px) {
+  .event-status {
+    display: none;
+  }
+}
+
+@media (max-width: 1250px) {
+  .event-card-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .event-card-content-left {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1000px) {
+  .event-card-content-left {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .event-card-center {
+    width: 100%;
+    align-items: center;
+  }
+
+  .event-header {
+    justify-content: center;
+  }
+
+  .event-info {
+    justify-content: center;
+  }
+}

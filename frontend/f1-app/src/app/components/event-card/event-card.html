@@ -28,9 +28,22 @@
               >
             }
 
-            <span>{{ event.name }}</span>
+            <span class="event-name breakable-name">
+              @for (word of event.name.split(' '); track word) {
+                <span class="breakable-name-word">{{ word }}</span>
+              }
+            </span>
+
             @if(event.circuit){
-              <span>Circuit: {{ event.circuit.name }}</span>
+              <span class="circuit-name">
+                <span>Circuit:</span>
+
+                <span class="breakable-name">
+                  @for (word of event.circuit.name.split(' '); track word) {
+                    <span class="breakable-name-word">{{ word }}</span>
+                  }
+                </span>
+              </span>
             }
           </div>
 

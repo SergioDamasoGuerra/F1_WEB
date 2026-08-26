@@ -51,3 +51,11 @@ export interface EventAPI {
   year: number;
 }
 */
+
+
+export interface CalendarWeek {
+  startDate: Date;
+  endDate: Date;
+  event?: Event;
+}
+

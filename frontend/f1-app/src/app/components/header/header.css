@@ -1,4 +1,6 @@
 header {
+  flex-shrink: 0;
+
   font-family: fantasy;
   color: white;
   display: flex;
@@ -7,6 +9,7 @@ header {
   padding: 10px 40px;
   background-color: #fa3232;
   min-height: 150px;
+  box-sizing: border-box;
 }
 
 #logo-header{

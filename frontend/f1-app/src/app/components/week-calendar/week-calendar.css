@@ -1,0 +1,54 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+
+#week-calendar {
+  display: grid;
+  grid-auto-flow: column;
+  /* Desktop: 14 semanas por columna */
+  grid-template-rows: repeat(14, auto);
+  grid-auto-columns: 1fr;
+
+  gap: 0.2rem;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.week-calendar-card {
+  padding: 5px;
+  border: 1px solid #000000;
+  border-radius: 10px;
+}
+
+.week-calendar-card:hover {
+  cursor: pointer;
+}
+
+.week-calendar-card.no-event {
+  background-color: #757575;
+}
+
+.week-calendar-event-image {
+  width: 20px;
+  height: auto;
+  border-radius: 5px;
+  border: 1px solid #000000;
+}
+
+
+@media (max-width: 1700px) {
+  #week-calendar {
+    grid-template-rows: repeat(21, auto);
+  }
+}
+
+@media (max-width: 1000px) {
+  #week-calendar {
+    grid-template-rows: repeat(42, auto);
+  }
+}

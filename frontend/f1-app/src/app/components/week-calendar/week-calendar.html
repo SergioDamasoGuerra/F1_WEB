@@ -1,0 +1,24 @@
+<h1>Week Calendar</h1>
+
+<section id="week-calendar">
+  @for(week of weeks; track week.startDate){
+    <article class="week-calendar-card"
+             (click)="eventSelected.emit(week.event)"
+             [ngClass]="week.event === undefined ? 'no-event' : 'event'"
+    >
+      {{ formatRange(week.startDate, week.endDate) }}
+      <br>
+      @if (week.event) {
+        <img
+          class="week-calendar-event-image"
+          [src]="week.event.country?.flagUrl"
+          [alt]="week.event.country?.name"
+        >
+      } @else {
+        <span>No Event</span>
+      }
+      <br>
+    </article>
+  }
+</section>
+

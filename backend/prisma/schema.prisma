@@ -100,7 +100,6 @@ model Event {
   dateStart    DateTime
   dateEnd      DateTime
   isCancelled  Boolean      @default(false)
-  status       String
   countryId    Int
   country      Country      @relation(fields: [countryId], references: [id])
   circuitId    Int

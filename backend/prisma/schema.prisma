@@ -54,9 +54,9 @@ model MessageLike {
 model Team {
   id       Int      @id @default(autoincrement())
   name     String   @unique
-  points   Float
-  position Int
-  drivers  Driver[]
+
+  driverStandings DriverEventStanding[]
+  standings TeamEventStanding[]
 }
 
 model Driver {
@@ -64,15 +64,13 @@ model Driver {
   driverNumber  Int          @unique
   name          String
   acronym       String
-  teamId        Int
-  team          Team         @relation(fields: [teamId], references: [id])
-  teamColor     String?
-  points        Float
-  position      Int?
   imageUrl      String?
+
   p1Predictions Prediction[] @relation("P1Driver")
   p2Predictions Prediction[] @relation("P2Driver")
   p3Predictions Prediction[] @relation("P3Driver")
+
+  standings DriverEventStanding[]
 }
 
 model Country {
@@ -104,9 +102,39 @@ model Event {
   country      Country      @relation(fields: [countryId], references: [id])
   circuitId    Int
   circuit      Circuit      @relation(fields: [circuitId], references: [id])
+
   predictions  Prediction[]
 
+  driverDtandings  DriverEventStanding[]
+  teamStandings  TeamEventStanding[]
+
   @@unique([name, year]) // <-- Clave compuesta única
+}
+
+model DriverEventStanding {
+  id        Int    @id @default(autoincrement())
+  position  Int    // Posición en el campeonato tras este evento
+  points    Float  // Puntos acumulados hasta este evento
+  driverId  Int
+  driver    Driver @relation(fields: [driverId], references: [id])
+  eventId   Int
+  event     Event  @relation(fields: [eventId], references: [id])
+  teamId    Int
+  team      Team  @relation(fields: [teamId], references: [id])
+
+  @@unique([driverId, eventId]) // Un piloto solo tiene 1 registro de clasificación por GP
+}
+
+model TeamEventStanding {
+  id        Int     @id @default(autoincrement())
+  position  Int
+  points    Float
+  teamId    Int
+  team      Team    @relation(fields: [teamId], references: [id])
+  eventId   Int
+  event     Event   @relation(fields: [eventId], references: [id])
+
+  @@unique([teamId, eventId])   // Un equipo solo tiene 1 registro de clasificación por GP
 }
 
 model Prediction {

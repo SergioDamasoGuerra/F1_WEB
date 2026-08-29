@@ -7,7 +7,7 @@ export const TEAM_COLORS: Record<string, string> = {
   Alpine: '#0093CC',
   Williams: '#64C4FF',
   'Haas F1 Team': '#B6BABD',
-  RB: '#6692FF',
+  'Racing Bulls': '#6692FF',
   Cadillac: '#717171',
   Audi: '#b3391e',
 };

@@ -1,20 +1,23 @@
-<article (click)="selectItem()" [class.selected]="selected">
-  <p id="standing-position">
-    {{item.position}}
-  </p>
-
-  @if('driverNumber' in item){
-    <p id="standing-name">
-      {{item.name}}, {{item.driverNumber}}
+@if(item){
+  <article (click)="selectItem()" [class.selected]="selected">
+    <p id="standing-position">
+      {{position}}
     </p>
-  }
 
-  <p>
-    {{item.name}}
-  </p>
+    <p id="standing-name">
+      {{item.name}}
+    </p>
 
-  <p id="standing-points">
-    {{item.points}}
-  </p>
+    @if('driverNumber' in item){
+      <p id="standing-number">
+        Nº-{{item.driverNumber}}
+      </p>
+    }
 
-</article>
+    <p id="standing-points">
+      {{ points }}
+    </p>
+
+  </article>
+}
+

@@ -10,17 +10,23 @@ import { Team } from '../../models/team';
   standalone: true,
 })
 export class DriverStandingCard {
-  @Input() item!: Driver | Team;
+  @Input() item!: Driver | Team | undefined;
+  @Input() points!: number;
+  @Input() position!: number;
   @Input() selected = false;
 
   @Output() selectedDriver = new EventEmitter<Driver>();
   @Output() selectedTeam = new EventEmitter<Team>();
 
   selectItem() {
-    if ('driverNumber' in this.item) {
-      this.selectedDriver.emit(this.item);
-    } else {
-      this.selectedTeam.emit(this.item);
+    if(this.item){
+      if ('driverNumber' in this.item) {
+        this.selectedDriver.emit(this.item);
+      } else {
+        this.selectedTeam.emit(this.item);
+      }
     }
   }
+
+
 }

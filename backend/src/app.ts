@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.routes.js";
 import driversRoutes from './routes/drivers.routes.js';
 import teamsRoutes from './routes/teams.routes.js';
 import eventsRoutes from './routes/events.routes.js';
+import standingsRotes from "./routes/standings.rotes.js";
 
 dotenv.config();
 
@@ -26,6 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api', driversRoutes);
 app.use('/api', teamsRoutes);
 app.use('/api', eventsRoutes);
+app.use('/api', standingsRotes);
 
 export default app;
 

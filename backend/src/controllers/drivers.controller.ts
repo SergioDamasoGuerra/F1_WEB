@@ -3,14 +3,7 @@ import {prisma} from '../config/prisma.js'
 
 export const getDrivers = async (req: Request, res: Response) => {
     try{
-        const drivers = await prisma.driver.findMany({
-            include: {team:true},
-        });
-
-        drivers.sort((a, b) =>
-            (a.position ?? Infinity) - (b.position ?? Infinity)
-        );
-
+        const drivers = await prisma.driver.findMany({});
         res.json(drivers);
     } catch(err){
         console.error('Error getting drivers:', err);

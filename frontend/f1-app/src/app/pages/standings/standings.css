@@ -93,3 +93,56 @@
   max-width: 5rem;
   align-self: center;
 }
+
+
+/*    =============
+      Botones de GP
+      =============
+*/
+
+.gp-bar-container {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto; /* Permite scroll horizontal si no caben */
+  padding: 12px;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ocultar barra de scroll fea pero mantener la funcionalidad */
+.gp-bar-container::-webkit-scrollbar {
+  height: 4px;
+}
+.gp-bar-container::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+.gp-btn {
+  flex: 0 0 auto; /* Evita que los botones se encojan */
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background-color: #1a1a1a;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gp-btn.done {
+  color: #fff;
+  border-color: #555;
+}
+
+.gp-btn.active {
+  background-color: #e10600; /* Rojo F1 */
+  color: #fff;
+  border-color: #e10600;
+  font-weight: bold;
+}
+
+.gp-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

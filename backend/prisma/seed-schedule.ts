@@ -72,7 +72,6 @@ async function main(){
         // Calcular estado dinámico
         const dateStartObj = new Date(event.date_start);
         const dateEndObj = new Date(event.date_end);
-        const currentStatus = getStatus(dateStartObj, dateEndObj, event.is_cancelled);
 
         // EVENTO
         await prisma.event.upsert({
@@ -87,7 +86,6 @@ async function main(){
                 dateStart: dateStartObj,
                 dateEnd: dateEndObj,
                 isCancelled: event.is_cancelled,
-                status: currentStatus,
                 countryId: dbCountry.id,
                 circuitId: dbCircuit.id,
             },
@@ -98,25 +96,12 @@ async function main(){
                 dateStart: dateStartObj,
                 dateEnd: dateEndObj,
                 isCancelled: event.is_cancelled,
-                status: currentStatus,
                 countryId: dbCountry.id,
                 circuitId: dbCircuit.id,
             },
         });
     }
     console.log('✅ Eventos guardados en PostgreSQL.');
-}
-
-function getStatus(
-    startDate: Date,
-    endDate: Date,
-    isCancelled: boolean,
-): 'done' | 'current' | 'upcoming' | 'cancelled' {
-    if (isCancelled) return 'cancelled';
-    const now = new Date();
-    if (now > endDate) return 'done';
-    if (now >= startDate && now <= endDate) return 'current';
-    return 'upcoming';
 }
 
 

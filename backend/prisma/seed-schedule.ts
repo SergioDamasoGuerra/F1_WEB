@@ -1,25 +1,5 @@
 import { prisma } from '../src/config/prisma.js';
-
-interface OpenF1Meeting{
-    "circuit_key": number,
-    "circuit_info_url": string,
-    "circuit_image": string,
-    "circuit_short_name": string,
-    "circuit_type": string,
-    "country_code": string,
-    "country_flag": string,
-    "country_key": number,
-    "country_name": string,
-    "date_end": string,
-    "date_start": string,
-    "gmt_offset": string,
-    "is_cancelled": boolean,
-    "location": string,
-    "meeting_key": number,
-    "meeting_name": string,
-    "meeting_official_name": string,
-    "year": number
-}
+import type {OpenF1Meeting} from "./api-models/openf1.model.js";
 
 const year = 2026;
 const MEETINGS_URL = `https://api.openf1.org/v1/meetings?year=${year}`
@@ -60,18 +40,20 @@ async function main(){
                 type: event.circuit_type || 'unknown',
                 imageUrl: event.circuit_image || null,
                 infoUrl: event.circuit_info_url || null,
+                countryId: dbCountry.id,
             },
             create: {
                 name: event.circuit_short_name,
                 type: event.circuit_type || 'unknown',
                 imageUrl: event.circuit_image || null,
                 infoUrl: event.circuit_info_url || null,
+                countryId: dbCountry.id,
             },
         });
 
         // Calcular estado dinámico
-        const dateStartObj = new Date(event.date_start);
-        const dateEndObj = new Date(event.date_end);
+        const startDateObj = new Date(event.date_start);
+        const endDateObj = new Date(event.date_end);
 
         // EVENTO
         await prisma.event.upsert({
@@ -83,20 +65,18 @@ async function main(){
             },
             update: {
                 officialName: event.meeting_official_name,
-                dateStart: dateStartObj,
-                dateEnd: dateEndObj,
+                startDate: startDateObj,
+                endDate: endDateObj,
                 isCancelled: event.is_cancelled,
-                countryId: dbCountry.id,
                 circuitId: dbCircuit.id,
             },
             create: {
                 name: event.meeting_name,
                 officialName: event.meeting_official_name,
                 year: event.year,
-                dateStart: dateStartObj,
-                dateEnd: dateEndObj,
+                startDate: startDateObj,
+                endDate: endDateObj,
                 isCancelled: event.is_cancelled,
-                countryId: dbCountry.id,
                 circuitId: dbCircuit.id,
             },
         });

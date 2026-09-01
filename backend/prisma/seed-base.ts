@@ -1,31 +1,26 @@
 import {prisma} from "../src/config/prisma.js"
-
-interface OpenF1Team {
-        meeting_key: number;
-        points_current: number;
-        points_start: number;
-        position_current: number;
-        position_start: number;
-        session_key: number;
-        team_name: string;
-}
-
-interface OpenF1Driver {
-    "broadcast_name": string;
-    "driver_number": number;
-    "first_name": string;
-    "full_name": string;
-    "headshot_url": string;
-    "last_name": string;
-    "meeting_key": number;
-    "name_acronym": string;
-    "session_key": number;
-    "team_colour": string;
-    "team_name": string;
-}
+import type {OpenF1Driver, OpenF1Team} from "./api-models/openf1.model.js";
 
 const DRIVERS_URL = 'https://api.openf1.org/v1/drivers?session_key=latest';
 const TEAMS_URL = 'https://api.openf1.org/v1/championship_teams?session_key=latest';
+
+function getDriverAcronym(driver: OpenF1Driver): string {
+    // Usar acrónimo de la API si lo trae
+    if (driver.name_acronym) {
+        return driver.name_acronym.toUpperCase();
+    }
+
+    // Si no, lo derivamos del apellido
+    const cleanName = driver.full_name || driver.first_name || 'UNKNOWN';
+    const lastName = cleanName.trim().split(' ').pop() || 'UNKNOWN';
+    let acronym = lastName.substring(0, 3).toUpperCase();
+
+    // Asegurar unicidad -> adjuntarle el número del piloto
+    if (driver.driver_number) {
+        acronym = `${acronym}${driver.driver_number}`;
+    }
+    return acronym;
+}
 
 async function main(){
     console.log(`📡 Iniciando sincronización de Equipos y Pilotos`);
@@ -61,22 +56,22 @@ async function main(){
         if (!driver.driver_number) continue;
 
         await prisma.driver.upsert({
-            where: { driverNumber: driver.driver_number },
+            where: { number: driver.driver_number },
             update: {
-                driverNumber: driver.driver_number,
+                number: driver.driver_number,
                 name: driver.full_name,
-                acronym: driver.name_acronym || 'DRV',
+                acronym: getDriverAcronym(driver),
                 imageUrl: driver.headshot_url || null,
             },
             create: {
-                driverNumber: driver.driver_number,
+                number: driver.driver_number,
                 name: driver.full_name,
-                acronym: driver.name_acronym || 'DRV',
+                acronym: getDriverAcronym(driver),
                 imageUrl: driver.headshot_url || null,
             },
         });
     }
-    console.log('✅ Equipos guardados en PostgreSQL.');
+    console.log('✅ Pilotos guardados en PostgreSQL.');
 
 }
 

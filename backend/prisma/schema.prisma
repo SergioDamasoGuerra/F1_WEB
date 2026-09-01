@@ -11,6 +11,172 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// MODELOS F1 BASE - DATOS
+
+model Driver {
+  id            Int          @id @default(autoincrement())
+  number        Int          @unique
+  name          String
+  acronym       String       @unique
+  imageUrl      String?
+
+  // Resultados
+  results       Result[]
+
+  // Standings
+  standings DriverEventStanding[]
+
+  // Predicciones
+  p1Predictions Prediction[] @relation("P1Driver")
+  p2Predictions Prediction[] @relation("P2Driver")
+  p3Predictions Prediction[] @relation("P3Driver")
+}
+
+model Team {
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+
+  // Resultados
+  results  Result[]
+
+  // Standings
+  driverStandings   DriverEventStanding[]
+  teamStandings     TeamEventStanding[]
+}
+
+model Country {
+  id      Int     @id @default(autoincrement())
+  code    String  @unique
+  name    String
+  flagUrl String?
+
+  // Circuitos del país
+  circuits  Circuit[]
+}
+
+model Circuit {
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  type     String?
+  imageUrl String?
+  infoUrl  String?
+
+  // FK país
+  countryId   Int
+  country     Country    @relation(fields: [countryId], references: [id], onDelete: Restrict)
+
+  // Eventos de un circuito
+  events   Event[]
+}
+
+model Event {
+  id           Int          @id @default(autoincrement())
+  name         String
+  officialName String
+  year         Int
+  startDate    DateTime
+  endDate      DateTime
+  isCancelled  Boolean      @default(false)
+
+  // FK circuito
+  circuitId    Int
+  circuit      Circuit      @relation(fields: [circuitId], references: [id])
+
+  // Sesiones de un evento (GP)
+  sessions    Session[]
+
+  // Standings
+  driverStandings   DriverEventStanding[]
+  teamStandings     TeamEventStanding[]
+
+  // Predicciones
+  predictions  Prediction[]
+
+  @@unique([name, year]) // <-- Clave compuesta única
+}
+
+model Session {
+  id          Int     @id @default(autoincrement())
+  type        String
+  startDate   DateTime
+  endDate     DateTime
+
+  // FK evento (GP)
+  eventId     Int
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Restrict)
+
+  // Resultados
+  results     Result[]
+
+  // UNIQUE
+  @@unique([eventId, type])
+}
+
+model Result {
+  id            Int     @id @default(autoincrement())
+  position      Int?    // Opcional para DNF/DNS/DSQ
+  gridPosition  Int?
+  points        Float   @default(0)
+  status        String
+
+  duration      Float?
+  gapToLeader   String?
+
+  fastestLap    Boolean @default(false)
+
+  // QUALY
+  q1Time        Float?
+  q2Time        Float?
+  q3Time        Float?
+
+  // FK sesión
+  sessionId     Int
+  session       Session   @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+
+  // FK piloto
+  driverId      Int
+  driver        Driver    @relation(fields: [driverId], references: [id], onDelete: Restrict)
+
+  // FK equipo
+  teamId        Int
+  team          Team      @relation(fields: [teamId], references: [id], onDelete: Restrict)
+
+  // UNIQUE
+  @@unique([sessionId, driverId])
+}
+
+
+// STANDINGS
+model DriverEventStanding {
+  id        Int    @id @default(autoincrement())
+  position  Int    // Posición en el campeonato tras este evento
+  points    Float  // Puntos acumulados hasta este evento
+  driverId  Int
+  driver    Driver @relation(fields: [driverId], references: [id])
+  eventId   Int
+  event     Event  @relation(fields: [eventId], references: [id])
+  teamId    Int
+  team      Team  @relation(fields: [teamId], references: [id])
+
+  @@unique([driverId, eventId]) // Un piloto solo tiene 1 registro de clasificación por GP
+}
+
+model TeamEventStanding {
+  id        Int     @id @default(autoincrement())
+  position  Int
+  points    Float
+  teamId    Int
+  team      Team    @relation(fields: [teamId], references: [id])
+  eventId   Int
+  event     Event   @relation(fields: [eventId], references: [id])
+
+  @@unique([teamId, eventId])   // Un equipo solo tiene 1 registro de clasificación por GP
+}
+
+
+
+// MODELOS DE LA PARTE DE USUARIO
+
 model User {
   id          Int          @id @default(autoincrement())
   username    String       @unique
@@ -49,92 +215,6 @@ model MessageLike {
   message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
 
   @@id([userId, messageId])
-}
-
-model Team {
-  id       Int      @id @default(autoincrement())
-  name     String   @unique
-
-  driverStandings DriverEventStanding[]
-  standings TeamEventStanding[]
-}
-
-model Driver {
-  id            Int          @id @default(autoincrement())
-  driverNumber  Int          @unique
-  name          String
-  acronym       String
-  imageUrl      String?
-
-  p1Predictions Prediction[] @relation("P1Driver")
-  p2Predictions Prediction[] @relation("P2Driver")
-  p3Predictions Prediction[] @relation("P3Driver")
-
-  standings DriverEventStanding[]
-}
-
-model Country {
-  id      Int     @id @default(autoincrement())
-  code    String  @unique
-  name    String
-  flagUrl String?
-  events  Event[]
-}
-
-model Circuit {
-  id       Int     @id @default(autoincrement())
-  name     String  @unique
-  type     String?
-  imageUrl String?
-  infoUrl  String?
-  events   Event[]
-}
-
-model Event {
-  id           Int          @id @default(autoincrement())
-  name         String
-  officialName String
-  year         Int
-  dateStart    DateTime
-  dateEnd      DateTime
-  isCancelled  Boolean      @default(false)
-  countryId    Int
-  country      Country      @relation(fields: [countryId], references: [id])
-  circuitId    Int
-  circuit      Circuit      @relation(fields: [circuitId], references: [id])
-
-  predictions  Prediction[]
-
-  driverDtandings  DriverEventStanding[]
-  teamStandings  TeamEventStanding[]
-
-  @@unique([name, year]) // <-- Clave compuesta única
-}
-
-model DriverEventStanding {
-  id        Int    @id @default(autoincrement())
-  position  Int    // Posición en el campeonato tras este evento
-  points    Float  // Puntos acumulados hasta este evento
-  driverId  Int
-  driver    Driver @relation(fields: [driverId], references: [id])
-  eventId   Int
-  event     Event  @relation(fields: [eventId], references: [id])
-  teamId    Int
-  team      Team  @relation(fields: [teamId], references: [id])
-
-  @@unique([driverId, eventId]) // Un piloto solo tiene 1 registro de clasificación por GP
-}
-
-model TeamEventStanding {
-  id        Int     @id @default(autoincrement())
-  position  Int
-  points    Float
-  teamId    Int
-  team      Team    @relation(fields: [teamId], references: [id])
-  eventId   Int
-  event     Event   @relation(fields: [eventId], references: [id])
-
-  @@unique([teamId, eventId])   // Un equipo solo tiene 1 registro de clasificación por GP
 }
 
 model Prediction {

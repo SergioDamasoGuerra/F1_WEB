@@ -5,12 +5,14 @@ import {calculateEventStatus} from "../utils/event-status.util.js";
 export const getEvents = async (req: Request, res: Response) => {
     try{
         const events = await prisma.event.findMany({
-            include: {country:true, circuit:true},
-            orderBy: {dateStart: 'asc'},
+            include: {
+                circuit: {include: {country: true}}
+            },
+            orderBy: {startDate: 'asc'},
         });
         const eventsWithStatus = events.map((event) => ({
             ...event,
-            status: calculateEventStatus(event.dateStart, event.dateEnd, event.isCancelled),
+            status: calculateEventStatus(event.startDate, event.endDate, event.isCancelled),
         }));
         return res.json(eventsWithStatus);
     }catch(err){

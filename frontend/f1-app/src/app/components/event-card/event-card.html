@@ -20,11 +20,11 @@
         <div class="event-card-center">
 
           <div class="event-header">
-            @if(event.country){
+            @if(event.circuit && event.circuit.country){
               <img
                 class="country-image"
-                [src]="event.country.flagUrl"
-                [alt]="event.country.name"
+                [src]="event.circuit.country.flagUrl"
+                [alt]="event.circuit.country.name"
               >
             }
 
@@ -50,8 +50,8 @@
           <div class="event-info">
             <span class="event-status">{{ capitalizeText(event.status) }}</span>
             <span class="event-dates">
-              {{ event.dateStart | date:'dd MMM' | uppercase }}-
-              {{ event.dateEnd | date:'dd MMM' | uppercase }}
+              {{ event.startDate | date:'dd MMM' | uppercase }}-
+              {{ event.endDate | date:'dd MMM' | uppercase }}
             </span>
           </div>
 

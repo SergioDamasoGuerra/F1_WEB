@@ -10,21 +10,21 @@ export class CalendarService {
 
     // Determinar el rango de eventos
     const firstEvent = events.reduce((first, event) =>
-      new Date(event.dateStart) < new Date(first.dateStart) ? event : first,
+      new Date(event.startDate) < new Date(first.startDate) ? event : first,
     );
 
     const lastEvent = events.reduce((last, event) =>
-      new Date(event.dateEnd) > new Date(last.dateEnd) ? event : last,
+      new Date(event.endDate) > new Date(last.endDate) ? event : last,
     );
 
     // Lunes de la semana del primer evento
-    const startDate = new Date(firstEvent.dateStart);
+    const startDate = new Date(firstEvent.startDate);
     const startDay = startDate.getDay();
     const startDiff = startDay === 0 ? -6 : 1 - startDay;
     startDate.setDate(startDate.getDate() + startDiff);
 
     // Lunes de la semana del último evento
-    const lastDate = new Date(lastEvent.dateEnd);
+    const lastDate = new Date(lastEvent.endDate);
     const lastDay = lastDate.getDay();
     const lastDiff = lastDay === 0 ? -6 : 1 - lastDay;
     lastDate.setDate(lastDate.getDate() + lastDiff);
@@ -36,7 +36,7 @@ export class CalendarService {
       endDate.setDate(endDate.getDate() + 6);
 
       const event = events.find(
-        (event) => new Date(event.dateStart) <= endDate && new Date(event.dateEnd) >= startDate,
+        (event) => new Date(event.startDate) <= endDate && new Date(event.endDate) >= startDate,
       );
 
       weeks.push({

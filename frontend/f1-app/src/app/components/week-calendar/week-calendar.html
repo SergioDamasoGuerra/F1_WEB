@@ -8,11 +8,11 @@
     >
       {{ formatRange(week.startDate, week.endDate) }}
       <br>
-      @if (week.event) {
+      @if (week.event && week.event.circuit && week.event.circuit.country) {
         <img
           class="week-calendar-event-image"
-          [src]="week.event.country?.flagUrl"
-          [alt]="week.event.country?.name"
+          [src]="week.event.circuit.country.flagUrl"
+          [alt]="week.event.circuit.country.name"
         >
       } @else {
         <span>No Event</span>

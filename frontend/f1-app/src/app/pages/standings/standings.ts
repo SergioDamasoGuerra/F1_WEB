@@ -146,7 +146,7 @@ export class Standings implements OnInit {
   protected isItemSelected(item: Driver | Team | undefined): boolean {
     if (!item) return false;
     if ('driverNumber' in item) {
-      return this.selectedDrivers().some((driver) => driver.driverNumber === item.driverNumber);
+      return this.selectedDrivers().some((driver) => driver.number === item.driverNumber);
     } else {
       return this.selectedTeams().some((team) => team.id === item.id);
     }

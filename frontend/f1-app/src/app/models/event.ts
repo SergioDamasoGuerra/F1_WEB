@@ -1,11 +1,3 @@
-export interface Circuit {
-  id: number;
-  name: string;
-  type?: string;
-  imageUrl?: string;
-  infoUrl?: string;
-}
-
 export interface Country {
   id: number;
   code: string;
@@ -13,17 +5,27 @@ export interface Country {
   flagUrl?: string;
 }
 
+export interface Circuit {
+  id: number;
+  name: string;
+  type?: string;
+  imageUrl?: string;
+  infoUrl?: string;
+
+  countryId: number;
+  country?: Country;
+}
+
 export interface Event {
   id: number;
   name: string;
   officialName: string;
   year: number;
-  dateStart: string;
-  dateEnd: string;
+  startDate: string;
+  endDate: string;
   isCancelled: boolean;
   status: 'done' | 'current' | 'upcoming' | 'cancelled';
-  countryId: number;
-  country?: Country;
+
   circuitId: number;
   circuit?: Circuit;
 }

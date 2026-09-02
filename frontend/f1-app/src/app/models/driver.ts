@@ -2,7 +2,7 @@ import { Team } from './team';
 
 export interface Driver {
   id: number;
-  driverNumber: number;
+  number: number;
   name: string;
   acronym: string;
   imageUrl?: string;

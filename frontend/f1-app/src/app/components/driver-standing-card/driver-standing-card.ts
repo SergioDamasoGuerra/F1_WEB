@@ -20,7 +20,7 @@ export class DriverStandingCard {
 
   selectItem() {
     if(this.item){
-      if ('driverNumber' in this.item) {
+      if ('number' in this.item) {
         this.selectedDriver.emit(this.item);
       } else {
         this.selectedTeam.emit(this.item);

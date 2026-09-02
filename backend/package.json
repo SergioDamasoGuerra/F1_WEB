@@ -7,8 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch src/app.ts",
     "seed:schedule": "tsx prisma/seed-schedule.ts",
-    "seed:standings": "tsx prisma/seed-gp-standings.ts",
-    "seed:base": "tsx prisma/seed-base.ts"
+    "seed:standings": "tsx prisma/seed-standings.ts",
+    "seed:base": "tsx prisma/seed-base.ts",
+    "seed:sessions": "tsx prisma/seed-sessions.ts",
+    "seed:results": "tsx prisma/seed-results.ts"
   },
   "keywords": [],
   "author": "",

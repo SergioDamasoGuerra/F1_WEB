@@ -1,10 +1,19 @@
 import { prisma } from '../src/config/prisma.js';
 import type {OpenF1Meeting} from "./api-models/openf1.model.js";
 
-const year = 2026;
-const MEETINGS_URL = `https://api.openf1.org/v1/meetings?year=${year}`
+const targetYear = 2025;
+const MEETINGS_URL = `https://api.openf1.org/v1/meetings?year=${targetYear}`
 
 async function main(){
+    console.log(`📡 Actualizando temporada ${targetYear}...`);
+
+    // Crea la Season si no existe, o no hace nada si ya estaba registrada
+    await prisma.season.upsert({
+        where: { year: targetYear },
+        update: {},
+        create: { year: targetYear },
+    });
+
     console.log('📡 Obteniendo datos (eventos) de la API de OpenF1...');
 
     const response = await fetch(MEETINGS_URL);
@@ -39,14 +48,14 @@ async function main(){
             update: {
                 type: event.circuit_type || 'unknown',
                 imageUrl: event.circuit_image || null,
-                infoUrl: event.circuit_info_url || null,
+                info: "DEFAULT CIRCUIT INFO.", // event.circuit_info_url || null (coordenadas, etc...)
                 countryId: dbCountry.id,
             },
             create: {
                 name: event.circuit_short_name,
                 type: event.circuit_type || 'unknown',
                 imageUrl: event.circuit_image || null,
-                infoUrl: event.circuit_info_url || null,
+                info: "DEFAULT CIRCUIT INFO.", // event.circuit_info_url || null (coordenadas, etc...)
                 countryId: dbCountry.id,
             },
         });
@@ -58,9 +67,9 @@ async function main(){
         // EVENTO
         await prisma.event.upsert({
             where: {
-                name_year: {
+                name_seasonId: {
                     name: event.meeting_name,
-                    year: event.year,
+                    seasonId: targetYear,
                 },
             },
             update: {
@@ -72,8 +81,8 @@ async function main(){
             },
             create: {
                 name: event.meeting_name,
+                seasonId: targetYear,
                 officialName: event.meeting_official_name,
-                year: event.year,
                 startDate: startDateObj,
                 endDate: endDateObj,
                 isCancelled: event.is_cancelled,

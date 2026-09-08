@@ -20,7 +20,7 @@ export class DriverStandingCard {
 
   selectItem() {
     if(this.item){
-      if ('number' in this.item) {
+      if ('acronym' in this.item) {
         this.selectedDriver.emit(this.item);
       } else {
         this.selectedTeam.emit(this.item);
@@ -28,5 +28,19 @@ export class DriverStandingCard {
     }
   }
 
+
+  protected getNumber(item: Driver) {
+    if (!item || !item.seasons) {
+      return 'N/A';
+    }
+    return item.seasons[0]?.number ?? 'N/A';
+  }
+
+  getTeamName(item: Team){
+    if (!item || !item.seasons) {
+      return 'N/A';
+    }
+    return item.seasons[0]?.officialName ?? 'N/A';
+  }
 
 }

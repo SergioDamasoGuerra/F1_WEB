@@ -1,81 +1,140 @@
 import {prisma} from "../src/config/prisma.js"
-import type {OpenF1Driver, OpenF1Team} from "./api-models/openf1.model.js";
+import type {OpenF1Driver, OpenF1Session} from "./api-models/openf1.model.js";
+import {TEAM_CANONICAL_MAP} from "./data/team-aliases.js";
+import {fetchWithRetry} from "../src/utils/http-utils.js";
 
-const DRIVERS_URL = 'https://api.openf1.org/v1/drivers?session_key=latest';
-const TEAMS_URL = 'https://api.openf1.org/v1/championship_teams?session_key=latest';
+const year = 2026;
 
-function getDriverAcronym(driver: OpenF1Driver): string {
-    // Usar acrónimo de la API si lo trae
-    if (driver.name_acronym) {
-        return driver.name_acronym.toUpperCase();
+async function seedSeasonEntities(){
+    console.log(`📡 Sincronización de Equipos y Pilotos para la temporada ${year}...`);
+
+    // Obtener todas las sesiones del año
+    const sessions = await fetchWithRetry<OpenF1Session[]>(
+        `https://api.openf1.org/v1/sessions?year=${year}`
+    );
+
+    if(!sessions || sessions.length === 0){
+        console.log(`⚠️ No se encontraron sesiones para el año ${year}.`);
+        return;
     }
 
-    // Si no, lo derivamos del apellido
-    const cleanName = driver.full_name || driver.first_name || 'UNKNOWN';
-    const lastName = cleanName.trim().split(' ').pop() || 'UNKNOWN';
-    let acronym = lastName.substring(0, 3).toUpperCase();
+    // Extraer 1 sola session_key por evento para optimizar llamadas
+    const selectedSessionKeys = new Set<number>();
+    const seenMeetings = new Set<number>();
 
-    // Asegurar unicidad -> adjuntarle el número del piloto
-    if (driver.driver_number) {
-        acronym = `${acronym}${driver.driver_number}`;
-    }
-    return acronym;
-}
-
-async function main(){
-    console.log(`📡 Iniciando sincronización de Equipos y Pilotos`);
-
-    const [driversRes, teamsRes] = await Promise.all([
-        fetch(DRIVERS_URL),
-        fetch(TEAMS_URL),
-    ]);
-
-    if (!driversRes.ok || !teamsRes.ok) {
-        throw new Error('Error al conectar con la API de OpenF1');
+    for (const s of sessions) {
+        if(!seenMeetings.has(s.meeting_key)){
+            seenMeetings.add(s.meeting_key);
+            selectedSessionKeys.add(s.session_key);
+        }
     }
 
-    const openF1Drivers = (await driversRes.json()) as OpenF1Driver[];
-    const openF1Teams = (await teamsRes.json()) as OpenF1Team[];
+    // Una sola petición multiclave a la API de OpenF1
+    const sessionKeysParams = Array.from(selectedSessionKeys)
+        .map(sessionKey => `session_key=${sessionKey}`)
+        .join('&');
 
-    for (const team of openF1Teams) {
-        if (!team.team_name) continue;
+    const apiDrivers = await fetchWithRetry<OpenF1Driver[]>(
+        `https://api.openf1.org/v1/drivers?${sessionKeysParams}`
+    );
 
-        await prisma.team.upsert({
-            where: { name: team.team_name },
+    if(!apiDrivers || apiDrivers.length === 0){
+        console.log("⚠️ No se obtuvieron datos de pilotos/equipos desde la API.");
+        return;
+    }
+
+    // Filtrar duplicados en memoria
+    const teamsMap = new Map<string, { officialName: string; colour: string | null }>();
+    const driversMap = new Map<string, OpenF1Driver>();
+
+    for (const d of apiDrivers) {
+        // Si tiene equipo Y no se ha guardado -> guardar
+        if(d.team_name && !teamsMap.has(d.team_name)){
+            teamsMap.set(d.team_name, {
+                officialName: d.team_name,
+                colour: d.team_colour ? `#${d.team_colour}` : null,
+            });
+        }
+
+        // Mapear pilotos únicos por acrónimo
+        if(d.name_acronym && d.driver_number && !driversMap.has(d.name_acronym)){
+            driversMap.set(d.name_acronym, d);
+        }
+    }
+
+    // Procesar equipos ('Team' y 'SeasonTeam')
+    console.log(`🏢 Sincronizando ${teamsMap.size} equipos...`);
+    for (const [rawTeamName, teamData] of teamsMap) {
+        const canonicalName = TEAM_CANONICAL_MAP[rawTeamName] ?? rawTeamName;
+
+        // Team (base/estático)
+        const team = await prisma.team.upsert({
+            where: {name: canonicalName},
+            update: {},
+            create: {name: canonicalName}
+        });
+
+        // SeasonTeam (dinámico: específico del año)
+        await prisma.seasonTeam.upsert({
+            where: {
+                teamId_year: {
+                    teamId: team.id,
+                    year: year
+                }
+            },
             update: {
-                name: team.team_name,
+                officialName: teamData.officialName,
+                colour: teamData.colour,
             },
             create: {
-                name: team.team_name,
-            },
+                teamId: team.id,
+                year: year,
+                officialName: teamData.officialName,
+                colour: teamData.colour,
+            }
         });
     }
-    console.log('✅ Equipos guardados en PostgreSQL.');
 
-    for (const driver of openF1Drivers) {
-        if (!driver.driver_number) continue;
-
-        await prisma.driver.upsert({
-            where: { number: driver.driver_number },
+    // Procesar pilotos ('Driver' y 'SeasonDriver')
+    console.log(`👤 Sincronizando ${driversMap.size} pilotos...`);
+    for(const [acronym, apiDriver] of driversMap) {
+        // Driver (base/estático)
+        const driver = await prisma.driver.upsert({
+            where: {acronym: acronym},
             update: {
-                number: driver.driver_number,
-                name: driver.full_name,
-                acronym: getDriverAcronym(driver),
-                imageUrl: driver.headshot_url || null,
+                name: apiDriver.full_name,
+                imageUrl: apiDriver.headshot_url || null,
             },
             create: {
-                number: driver.driver_number,
-                name: driver.full_name,
-                acronym: getDriverAcronym(driver),
-                imageUrl: driver.headshot_url || null,
+                name: apiDriver.full_name,
+                acronym: acronym,
+                imageUrl: apiDriver.headshot_url || null,
+            }
+        });
+
+        // SeasonDriver (dorsal de ese año)
+        await prisma.seasonDriver.upsert({
+            where: {
+                driverId_year: {
+                    driverId: driver.id,
+                    year: year,
+                }
             },
+            update: {
+                number: apiDriver.driver_number
+            },
+            create: {
+                driverId: driver.id,
+                year: year,
+                number: apiDriver.driver_number,
+            }
         });
     }
-    console.log('✅ Pilotos guardados en PostgreSQL.');
 
+    console.log(`✅ Sincronización completa de Equipos y Pilotos para ${year}.`);
 }
 
-main()
+seedSeasonEntities()
     .catch((e) => {
         console.error('❌ Error durante el Seed Base:', e);
         process.exit(1);

@@ -29,6 +29,8 @@ function compareStandings(a: F1ItemComparable, b: F1ItemComparable): number {
     return 0;
 }
 
+const targetYear = 2026;
+
 async function main() {
     console.log('⏳ Actualizando standings...')
 
@@ -41,6 +43,9 @@ async function main() {
         prisma.event.findMany({
             where: {
                 isCancelled: false,
+                season: {
+                    year: targetYear,
+                },
                 endDate: { lte: new Date() },
                 NOT: {name: {contains: 'testing', mode: 'insensitive'}}
             },
@@ -48,7 +53,11 @@ async function main() {
             include: {
                 sessions: {
                     where: { type: { in: ['Race', 'Sprint'] } },
-                    include: { results: true }
+                    include: {
+                        results: {
+                            include: {raceData: true}
+                        }
+                    }
                 }
             }
         })
@@ -100,14 +109,16 @@ async function main() {
                     newTeamPositionsCount[result.position] = (newTeamPositionsCount[result.position] || 0) + 1;
                 }
 
+                const pointsToAdd = result.raceData?.points ?? 0;
+
                 driverAccumulator.set(result.driverId, {
-                    points: currentDriver.points + result.points,
+                    points: currentDriver.points + pointsToAdd,
                     teamId: result.teamId,
                     positionsCount: newDriverPositionsCount
                 });
 
                 teamAccumulator.set(result.teamId, {
-                    points: currentTeam.points + result.points,
+                    points: currentTeam.points + pointsToAdd,
                     positionsCount: newTeamPositionsCount
                 });
 

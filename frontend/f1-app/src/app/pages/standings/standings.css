@@ -24,13 +24,13 @@
   text-decoration: underline;
 }
 
-.standings-header{
+.standings-table-header{
   display: flex;
   gap: 20px;
   width: 600px;
   font-family: Verdana, Geneva, sans-serif;
 }
-#standings-header-pts{
+#standings-table-header-pts{
   margin-left: auto;
 }
 
@@ -51,14 +51,10 @@
   flex-direction: column;
   gap: 30px 20px;
   padding: 10px;
-  background-color: #e30d0a;
+  background-color: #000000;
   border-radius: 10px;
   color: white;
   font-weight: normal;
-}
-
-.comparison-title{
-  color: black;
 }
 
 .comp-selected-row{
@@ -80,9 +76,8 @@
 }
 
 .comp-selected-item{
-  border: black solid 2px;
-  border-radius: 10px;
-  padding: 5px;
+  border: #ffd400 solid 2px;
+  padding: 8px;
 }
 
 .clearButton{
@@ -145,4 +140,40 @@
 .gp-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+#season-select{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+
+.standings-header{
+  display: flex;
+  flex-direction: row;
+}
+
+#season-select{
+  padding: 10px 20px;
+  width: fit-content;
+}
+
+#standings-info{
+  padding: 20px;
+  height: 120px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  font-size: xx-large;
+  font-weight: bold;
+}
+
+#selected-event-country-flag{
+  height: 80%;
+  width: auto;
+  border-radius: 10px;
+  border: 1px solid black;
 }

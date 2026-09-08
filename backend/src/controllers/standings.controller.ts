@@ -9,13 +9,33 @@ export async function getDriverStandingsByEvent(req: Request, res: Response) {
             return res.status(400).json({ error: 'Parámetro eventId no válido' });
         }
 
+        const event = await prisma.event.findUnique({
+            where: { id: eventId },
+            select: { seasonId: true }
+        });
+
+        if (!event) return res.status(404).json({ error: `Evento no encontrado para eventId = ${eventId}` });
+
         const standings = await prisma.driverEventStanding.findMany({
             where: { eventId },
             include: {
-                driver: true,
-                team: true
+                driver: {
+                    include: {
+                        seasons: {
+                            where: { year: event.seasonId },
+                            select: { number: true } // Traer solo el dorsal
+                        }
+                    }
+                },
+                team: {
+                    include: {
+                        seasons: {
+                            where: { year: event.seasonId },
+                        }
+                    }
+                }
             },
-            orderBy: { position: 'asc' }, // Ordenados de 1º a 22º
+            orderBy: { position: 'asc' },
         });
 
         return res.json(standings);
@@ -33,12 +53,34 @@ export async function getTeamStandingsByEvent(req: Request, res: Response) {
             return res.status(400).json({ error: 'Parámetro eventId no válido' });
         }
 
+        const event = await prisma.event.findUnique({
+            where: { id: eventId },
+            select: { seasonId: true }
+        });
+
+        if (!event) return res.status(404).json({ error: `Evento no encontrado para eventId = ${eventId}` });
+
         const standings = await prisma.teamEventStanding.findMany({
-            where: { eventId },
-            include: {
-                team: true
+            where: {
+                eventId,
+                team: {
+                    seasons: {
+                        some: {
+                            year: event.seasonId
+                        }
+                    }
+                }
             },
-            orderBy: { position: 'asc' }, // Ordenados de 1º a 11º
+            include: {
+                team: {
+                    include: {
+                        seasons: {
+                            where: { year: event.seasonId },
+                        }
+                    }
+                },
+            },
+            orderBy: { position: 'asc' },
         });
 
         return res.json(standings);

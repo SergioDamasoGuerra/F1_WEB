@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { Circuit, Country, Event } from '../models/event';
-import { HttpClient } from '@angular/common/http';
-import { Driver } from '../models/driver';
+import { Observable } from 'rxjs';
+import { Event } from '../models/event';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -12,8 +11,16 @@ export class EventsService {
 
   constructor(private http: HttpClient) {}
 
-  getEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(this.eventsUrl);
+  getEvents(year: string): Observable<Event[]> {
+    const params = new HttpParams().set('year', year);
+    return this.http.get<Event[]>(this.eventsUrl, { params });
   }
 
+  getLatestSeason(): Observable<{ year: number }> {
+    return this.http.get<{ year: number }>(`${this.eventsUrl}/latest-season`);
+  }
+
+  getAllSeasonYears(): Observable<{ year: number }[]> {
+    return this.http.get<{ year: number }[]>(`${this.eventsUrl}/season-years`);
+  }
 }

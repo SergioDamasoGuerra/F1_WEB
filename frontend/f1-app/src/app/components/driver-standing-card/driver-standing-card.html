@@ -4,13 +4,19 @@
       {{position}}
     </p>
 
-    <p id="standing-name">
-      {{item.name}}
-    </p>
+    @if('acronym' in item){   <!-- Driver -->
+      <p id="standing-name">
+        {{item.name}}
+      </p>
+    } @else {   <!-- Team -->
+      <p id="standing-name">
+        {{getTeamName(item)}}
+      </p>
+    }
 
-    @if('number' in item){
+    @if('acronym' in item){
       <p id="standing-number">
-        Nº-{{item.number}}
+        Nº-{{getNumber(item)}}
       </p>
     }
 

@@ -1,16 +1,23 @@
-import {Driver} from './driver'
+import { DriverEventStanding, TeamEventStanding } from './standings';
+import { Season } from './event';
 
 export interface Team {
   id: number;
   name: string;
-  drivers?: Driver[];
+
+  seasons?: SeasonTeam[];
+  driverStandings?: DriverEventStanding[];
+  teamStandings?: TeamEventStanding[];
+  // results?: Result[];
 }
 
-/*  PRISMA:
+export interface SeasonTeam {
+  officialName: string;
+  colour: string;
 
-model Team {
-  id       Int      @id @default(autoincrement())
-  name     String   @unique
-  drivers  Driver[]
+  teamId: number;
+  team?: Team;
+
+  seasonId: number;
+  season?: Season;
 }
- */

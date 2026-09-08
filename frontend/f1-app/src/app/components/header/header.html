@@ -10,8 +10,25 @@
       </li>
       @if(f1LiveMenuOpen) {
         <div class="side-menu">
-          <li><a class="navbar" routerLink="/standings" (click)="f1LiveMenuOpen = false">Standings</a></li>
-          <li><a class="navbar" routerLink="/schedule" (click)="f1LiveMenuOpen = false">Schedule</a></li>
+          <li>
+            <a
+              class="navbar"
+              [routerLink]="['/standings', latestSeason()]"
+              (click)="f1LiveMenuOpen = false"
+            >
+              Standings
+            </a>
+          </li>
+
+          <li>
+            <a
+              class="navbar"
+              [routerLink]="['/schedule', latestSeason()]"
+              (click)="f1LiveMenuOpen = false"
+            >
+              Schedule
+            </a>
+          </li>
         </div>
       }
       <li><a class="navbar" routerLink="/forums">Forums</a></li>

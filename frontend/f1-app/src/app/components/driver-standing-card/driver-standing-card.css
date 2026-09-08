@@ -2,13 +2,15 @@ article{
   display: flex;
   min-width: 600px;
   gap: 1rem;
-  border: black solid 1px;
   padding: 5px;
   font-family: Verdana, Geneva, sans-serif;
+
+  box-sizing: border-box;
+  border: 2px solid black;
 }
 
 article.selected {
-  border: gold solid 3px;
+  border: gold solid 2px;
 }
 
 #standing-position{

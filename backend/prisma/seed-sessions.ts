@@ -10,7 +10,7 @@ async function main() {
     console.log('📡 Obteniendo datos (sesiones) de la API de OpenF1...');
 
     // Obtener eventos de la BD
-    const dbEvents = await prisma.event.findMany({ where: { year: year } });
+    const dbEvents = await prisma.event.findMany({ where: { seasonId: year } });
 
     // Peticiones HTTP a OpenF1
     const [apiMeetingsRes, apiSessionsRes] = await Promise.all([
@@ -38,7 +38,7 @@ async function main() {
         }
     }
 
-    console.log(meetingToEventMap);
+    // console.log(meetingToEventMap);
 
     // Iterar las sesiones e insertar en la BD
     for (const session of apiSessions) {

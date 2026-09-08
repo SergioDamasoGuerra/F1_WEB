@@ -1,4 +1,10 @@
 import {SPECIAL_POINTS_DISTRIBUTION} from '../config/points-override.js'
+import type {OpenF1SessionResult} from "../../prisma/api-models/openf1.model.js";
+import { Prisma } from '@prisma/client';
+
+type SessionWithEvent = Prisma.SessionGetPayload<{
+    include: { event: true };
+}>;
 
 const RACE_POINTS: Record<number, number> = {
     1: 25, 2: 18, 3: 15, 4: 12, 5: 10,
@@ -44,7 +50,7 @@ export function getSessionPoints(
 
 export function getGapToLeader(
     gapToLeader: number | string | Array<number | null | undefined> | null | undefined
-): number | string | null {
+): string | null {
     // Si es null o undefined, devolvemos null
     if (gapToLeader === null || gapToLeader === undefined) {
         return null;
@@ -53,7 +59,7 @@ export function getGapToLeader(
     // Si no es un array -> no es qualy -> Practice | Sprint | Race
     // The time gap to the session leader in seconds, or "+N LAP(S)" if the driver was lapped
     if (!Array.isArray(gapToLeader)) {
-        return gapToLeader;
+        return gapToLeader.toString();
     }
 
     // Si es un array -> Qualy (Q1, Q2, Q3)
@@ -63,6 +69,44 @@ export function getGapToLeader(
     if (validGaps.length === 0) return null;
 
     // Devuelve la brecha de la ronda más reciente (Q3 > Q2 > Q1)
-    return validGaps[validGaps.length - 1] ?? null;
+    return validGaps[validGaps.length - 1]?.toString() ?? null;
+}
+
+
+export function getRaceResult(
+    res: OpenF1SessionResult,
+    session: SessionWithEvent,
+    status: string
+): Prisma.RaceResultCreateWithoutResultInput {
+    return {
+        gridPosition: null, // TO-DO: obtener grid position
+        points: getSessionPoints(res.session_key, session.type, res.position, status),
+        fastestLap: false   // TO-DO: ver si hizo la vuelta rápida
+    }
+}
+
+
+export function getQualyResult(
+    res: OpenF1SessionResult
+): Prisma.QualyResultCreateWithoutResultInput {
+    const durations = Array.isArray(res.duration) ? res.duration : [];
+
+    return {
+        q1Time: durations[0] ?? null,
+        q2Time: durations[1] ?? null,
+        q3Time: durations[2] ?? null,
+    }
+}
+
+
+export function getPracticeResult(
+    res: OpenF1SessionResult,
+): Prisma.PracticeResultCreateWithoutResultInput {
+    const bestTime = (typeof res.duration === 'number') ? res.duration : 0;
+
+    return {
+        bestTime: bestTime,
+        lapsCompleted: res.number_of_laps
+    }
 }
 

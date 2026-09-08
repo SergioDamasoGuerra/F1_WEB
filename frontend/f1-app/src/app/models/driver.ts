@@ -1,12 +1,24 @@
-import { Team } from './team';
+import { Season } from './event';
+import { DriverEventStanding } from './standings';
 
 export interface Driver {
   id: number;
-  number: number;
   name: string;
   acronym: string;
   imageUrl?: string;
-  teamId: number;
-  team?: Team; // Se incluye cuando usas include: { team: true } en Express
-  teamColor?: string;
+
+  // results?: Result[];
+  seasons?: SeasonDriver[];
+  standings?: DriverEventStanding[];
+}
+
+
+export interface SeasonDriver {
+  number: number;
+
+  driverId: number;
+  driver?: Driver;
+
+  seasonId: number;
+  season?: Season;
 }

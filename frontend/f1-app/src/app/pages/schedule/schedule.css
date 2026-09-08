@@ -1,7 +1,18 @@
 :host {
   display: block;
-  height: 100%;
-  min-height: 0;
+}
+
+#schedule-header {
+  display: flex;
+  flex-direction: row;
+  padding: 20px 50px;
+}
+
+#schedule-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 #schedule-container {
@@ -9,14 +20,10 @@
   grid-template-columns: 3fr 1fr;
   gap: 5rem;
 
-  height: 100%;
-  min-height: 0;
-  min-width: 0;
+  align-items: stretch;
 
-  padding: 50px;
+  padding: 0 50px 50px 50px;
   box-sizing: border-box;
-
-  overflow: hidden;
 }
 
 #events-list {
@@ -24,12 +31,13 @@
   flex-direction: column;
   gap: 20px;
 
-  min-height: 0;
-  min-width: 0;
+  padding: 20px;
+  box-sizing: border-box;
 
-  padding: 0 20px;
+  height: 0;
+  min-height: 100%;
 
-  overflow-y: hidden;
+  overflow-y: auto;
   overflow-x: hidden;
 
   border-radius: 20px;
@@ -37,8 +45,9 @@
 }
 
 app-week-calendar {
-  height: 100%;
-  min-height: 0;
-  min-width: 0;
+  display: block;
+
+  height: fit-content;
+  overflow: hidden;
 }
 

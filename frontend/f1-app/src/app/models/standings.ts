@@ -3,7 +3,6 @@ import { Event } from './event';
 import { Team } from './team';
 
 export interface DriverEventStanding {
-  id: number;
   position: number;
   points: number;
   driverId: number;
@@ -16,7 +15,6 @@ export interface DriverEventStanding {
 
 
 export interface TeamEventStanding {
-  id: number;
   position: number;
   points: number;
   teamId: number;

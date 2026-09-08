@@ -1,6 +1,27 @@
+<div id="schedule-header">
+  <div id="season-select">
+    <label for="season-options">Season:</label>
+    <select
+      #seasonSelect
+      id="season-options"
+      name="season-options"
+      [value]="selectedYear()"
+      (change)="onSeasonChange(seasonSelect.value)">
+      @for (yearObj of seasonYears(); track yearObj.year) {
+        <option
+          [value]="yearObj.year"
+          [selected]="yearObj.year === selectedYear()">
+          {{ yearObj.year }}
+        </option>
+      }
+    </select>
+  </div>
+
+  <h1 id="schedule-title" class="fancy">{{selectedYear()}} Season Calendar</h1>
+</div>
+
 <div id="schedule-container">
   <section id="events-list">
-    <h1 class="fancy">Season Calendar</h1>
     @for(event of events(); track event.id){
       <app-event-card
         [event]="event"

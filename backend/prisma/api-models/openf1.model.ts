@@ -66,8 +66,8 @@ export interface OpenF1SessionResult {
     "dns": boolean,
     "dsq": boolean,
     "driver_number": number,
-    "duration": number,
-    "gap_to_leader": number,
+    "duration": number | number[];
+    "gap_to_leader": number | number[];
     "number_of_laps": number,
     "meeting_key": number,
     "position": number,

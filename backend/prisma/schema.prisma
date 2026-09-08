@@ -15,13 +15,15 @@ generator client {
 
 model Driver {
   id            Int          @id @default(autoincrement())
-  number        Int          @unique
   name          String
   acronym       String       @unique
   imageUrl      String?
 
   // Resultados
   results       Result[]
+
+  // Asignaciones de temporada
+  seasons SeasonDriver[]
 
   // Standings
   standings DriverEventStanding[]
@@ -33,8 +35,13 @@ model Driver {
 }
 
 model Team {
-  id       Int      @id @default(autoincrement())
-  name     String   @unique
+  id            Int          @id @default(autoincrement())
+  name          String       @unique
+  nationality   String?
+  factoryBase   String?
+
+  // Asignaciones de temporada
+  seasons  SeasonTeam[]
 
   // Resultados
   results  Result[]
@@ -55,11 +62,13 @@ model Country {
 }
 
 model Circuit {
-  id       Int     @id @default(autoincrement())
-  name     String  @unique
-  type     String?
-  imageUrl String?
-  infoUrl  String?
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  type      String?
+  imageUrl  String?
+  info      String?
+  lengthKm  Float?
+  corners   Int?
 
   // FK país
   countryId   Int
@@ -72,15 +81,19 @@ model Circuit {
 model Event {
   id           Int          @id @default(autoincrement())
   name         String
-  officialName String
-  year         Int
+  officialName String?
   startDate    DateTime
   endDate      DateTime
   isCancelled  Boolean      @default(false)
+  laps         Int?
 
   // FK circuito
   circuitId    Int
   circuit      Circuit      @relation(fields: [circuitId], references: [id])
+
+  // FK temporada
+  seasonId    Int
+  season      Season        @relation(fields: [seasonId], references: [year], onDelete: Restrict)
 
   // Sesiones de un evento (GP)
   sessions    Session[]
@@ -92,7 +105,52 @@ model Event {
   // Predicciones
   predictions  Prediction[]
 
-  @@unique([name, year]) // <-- Clave compuesta única
+  @@unique([name, seasonId]) // <-- Clave compuesta única
+}
+
+model Season {
+  year      Int        @id
+
+  // Eventos de una temporada
+  events    Event[]
+
+  // Asignaciones de pilotos de una temporada
+  drivers   SeasonDriver[]
+
+  // Asignaciones de equipos de una temporada
+  teams     SeasonTeam[]
+}
+
+model SeasonDriver {
+  number   Int
+
+  // FK temporada
+  year     Int
+  season   Season @relation(fields: [year], references: [year], onDelete: Restrict)
+
+  // FK piloto
+  driverId Int
+  driver   Driver @relation(fields: [driverId], references: [id], onDelete: Restrict)
+
+  // PK Compuesta
+  @@id([driverId, year])
+
+  // En revisión: NO APLICABLE por pilotos jóvenes de FP1...
+  // @@unique([year, number]) // No se repiten dorsales en la misma temporada
+}
+
+model SeasonTeam {
+  teamId    Int
+  team      Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  year      Int
+  season    Season  @relation(fields: [year], references: [year], onDelete: Cascade)
+
+  // Datos dinámicos por temporada
+  officialName  String?   // Ej: "Stake F1 Team Kick Sauber" (2024) vs "Audi F1 Team" (2026)
+  colour        String?   // Ej: Hexadecimal del livery de ese año
+
+  @@id([teamId, year])
 }
 
 model Session {
@@ -115,19 +173,13 @@ model Session {
 model Result {
   id            Int     @id @default(autoincrement())
   position      Int?    // Opcional para DNF/DNS/DSQ
-  gridPosition  Int?
-  points        Float   @default(0)
   status        String
-
-  duration      Float?
   gapToLeader   String?
 
-  fastestLap    Boolean @default(false)
-
-  // QUALY
-  q1Time        Float?
-  q2Time        Float?
-  q3Time        Float?
+  // Subtablas 1:1
+  raceData      RaceResult?
+  qualyData     QualyResult?
+  practiceData  PracticeResult?
 
   // FK sesión
   sessionId     Int
@@ -145,32 +197,62 @@ model Result {
   @@unique([sessionId, driverId])
 }
 
+model RaceResult {
+  resultId      Int       @id
+  result        Result    @relation(fields: [resultId], references: [id], onDelete: Cascade)
+
+  gridPosition  Int?
+  points        Float     @default(0)
+  fastestLap    Boolean   @default(false)
+}
+
+model QualyResult {
+  resultId    Int       @id
+  result      Result    @relation(fields: [resultId], references: [id], onDelete: Cascade)
+
+  q1Time      Float?
+  q2Time      Float?
+  q3Time      Float?
+}
+
+model PracticeResult {
+  resultId    Int       @id
+  result      Result    @relation(fields: [resultId], references: [id], onDelete: Cascade)
+
+  bestTime        Float?
+  lapsCompleted   Int   @default(0)
+}
 
 // STANDINGS
 model DriverEventStanding {
-  id        Int    @id @default(autoincrement())
   position  Int    // Posición en el campeonato tras este evento
   points    Float  // Puntos acumulados hasta este evento
+
   driverId  Int
   driver    Driver @relation(fields: [driverId], references: [id])
+
   eventId   Int
   event     Event  @relation(fields: [eventId], references: [id])
+
   teamId    Int
   team      Team  @relation(fields: [teamId], references: [id])
 
-  @@unique([driverId, eventId]) // Un piloto solo tiene 1 registro de clasificación por GP
+  // PK compuesta: Un piloto solo tiene 1 registro de clasificación por GP
+  @@id([driverId, eventId])
 }
 
 model TeamEventStanding {
-  id        Int     @id @default(autoincrement())
   position  Int
   points    Float
+
   teamId    Int
   team      Team    @relation(fields: [teamId], references: [id])
+
   eventId   Int
   event     Event   @relation(fields: [eventId], references: [id])
 
-  @@unique([teamId, eventId])   // Un equipo solo tiene 1 registro de clasificación por GP
+  // PK compuesta: Un equipo solo tiene 1 registro de clasificación por GP
+  @@id([teamId, eventId])
 }
 
 

@@ -1,36 +1,68 @@
-<div class="gp-bar-container">
-  @for (event of events(); track event.id) {
-    <button
-      [attr.id]="selectedEventId() === event.id ? 'active-event' : null"
-      class="gp-btn"
-      [class.active]="selectedEventId() === event.id"
-      [class.done]="event.status === 'done'"
-      [disabled]="event.status !== 'done'"
-      (click)="selectEvent(event.id)">
+<div class="standings-header">
 
-      <span class="round">R{{ $index + 1 }} </span>
-      <span class="name">{{ event.name }}</span>
-    </button>
-  }
+  <div id="season-select">
+    <label for="season-options">Season:</label>
+    <select
+      #seasonSelect
+      id="season-options"
+      name="season-options"
+      [value]="selectedYear()"
+      (change)="onSeasonChange(seasonSelect.value)">
+      @for (yearObj of seasonYears(); track yearObj.year) {
+        <option
+          [value]="yearObj.year"
+          [selected]="yearObj.year === selectedYear()">
+          {{ yearObj.year }}
+        </option>
+      }
+    </select>
+  </div>
+
+  <div class="gp-bar-container">
+    @for (event of events(); track event.id) {
+      @if(!event.isCancelled){
+        <button
+          [attr.id]="selectedEventId() === event.id ? 'active-event' : null"
+          class="gp-btn"
+          [class.active]="selectedEventId() === event.id"
+          [class.done]="event.status === 'done'"
+          [disabled]="event.status !== 'done'"
+          (click)="selectEvent(event.id)">
+
+          <span class="round">R{{ $index + 1 }} </span>
+          <span class="name">{{ event.name }}</span>
+        </button>
+      }
+    }
+  </div>
+</div>
+
+<div id="standings-info">
+  <span>Season: {{selectedYear()}}</span>
+  <span>Standings up to the {{ selectedEvent()?.name }}</span>
+  <img id="selected-event-country-flag"
+    [src]="selectedEvent()?.circuit?.country?.flagUrl"
+    [alt]="selectedEvent()?.circuit?.name"
+  >
 </div>
 
 <div id="main-container">
   <div class="standings" id="driver-standings">
     <h2 class="standings-title">DRIVERS STANDINGS</h2>
-    <div class="standings-header">
+    <div class="standings-table-header">
       <p>Pos. Driver</p>
-      <p id="standings-header-pts">Pts.</p>
+      <p id="standings-table-header-pts">Pts.</p>
     </div>
     <!-- <div class="standings-content"> -->
-    @for (standing of driverStandings(); track standing.id) {
-      @if (standing.driver; as driver) {
+    @for (standingDriver of driverStandings(); track standingDriver.driverId) {
+      @if (standingDriver.driver; as driver) {
         <app-driver-standing-card
           [item]="driver"
-          [points]="standing.points"
-          [position]="standing.position"
-          [selected]="isItemSelected(driver)"
-          [style.background]="getColor(standing.team?.name)"
-          (selectedDriver)="selectDriver(driver, standing.team)">
+          [points]="standingDriver.points"
+          [position]="standingDriver.position"
+          [selected]="isDriverSelected(driver.id)"
+          [style.background]="getColor(standingDriver)"
+          (selectedDriver)="toggleDriverSelection(standingDriver.driverId)">
         </app-driver-standing-card>
       }
     }
@@ -44,15 +76,17 @@
       <p id="standings-header-pts">Pts.</p>
     </div>
     <!-- <div class="standings-content"> -->
-      @for (team of teamStandings(); track team.team) {
-        <app-driver-standing-card
-          [item]="team.team"
-          [points]="team.points"
-          [position]="team.position"
-          (selectedTeam)="selectTeam($event)"
-          [selected]="isItemSelected(team.team)"
-          [style.background]="getColor(team.team?.name)">
-        </app-driver-standing-card>
+      @for (standingTeam of teamStandings(); track standingTeam.teamId) {
+        @if(standingTeam.team; as team){
+          <app-driver-standing-card
+            [item]="team"
+            [points]="standingTeam.points"
+            [position]="standingTeam.position"
+            (selectedTeam)="toggleTeamSelection(standingTeam.teamId)"
+            [selected]="isTeamSelected(standingTeam.teamId)"
+            [style.background]="getColor(standingTeam)">
+          </app-driver-standing-card>
+        }
       }
     <!-- </div> -->
   </div>
@@ -62,21 +96,21 @@
       <div class="comp-selected-row">
         <div class="comp-selected-col">
           <p class="comp-selected-title">DRIVER 1:</p>
-          @if(selectedDrivers().length > 0){
+          @if (selectedDriversData()[0]; as item1) {
             <p
               class="comp-selected-item"
-              [style.background-color]="getColor(selectedDrivers()[0].team?.name)">
-              {{selectedDrivers()[0].acronym}}
+              [style.background-color]="getColor(item1)">
+              {{ item1.driver?.acronym }}
             </p>
           }
         </div>
         <div class="comp-selected-col">
           <p class="comp-selected-title">DRIVER 2:</p>
-          @if(selectedDrivers().length > 1){
+          @if (selectedDriversData()[1]; as item2) {
             <p
               class="comp-selected-item"
-              [style.background-color]="getColor(selectedDrivers()[1].team?.name)">
-              {{selectedDrivers()[1].acronym}}
+              [style.background-color]="getColor(item2)">
+              {{ item2.driver?.acronym }}
             </p>
           }
         </div>
@@ -93,21 +127,21 @@
       <div class="comp-selected-row">
         <div class="comp-selected-col">
           <p class="comp-selected-title">TEAM 1:</p>
-          @if(selectedTeams().length > 0){
+          @if (selectedTeamsData()[0]; as item1) {
             <p
               class="comp-selected-item"
-              [style.background-color]="getColor(selectedTeams()[0].name)">
-              {{selectedTeams()[0].name}}
+              [style.background-color]="getColor(item1)">
+              {{ getOfficialName(item1) }}
             </p>
           }
         </div>
         <div class="comp-selected-col">
           <p class="comp-selected-title">TEAM 2:</p>
-          @if(selectedTeams().length > 1){
+          @if (selectedTeamsData()[1]; as item2) {
             <p
               class="comp-selected-item"
-              [style.background-color]="getColor(selectedTeams()[1].name)">
-              {{selectedTeams()[1].name}}
+              [style.background-color]="getColor(item2)">
+              {{ item2.team?.name }}
             </p>
           }
         </div>

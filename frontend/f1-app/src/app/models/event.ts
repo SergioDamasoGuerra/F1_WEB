@@ -10,17 +10,20 @@ export interface Circuit {
   name: string;
   type?: string;
   imageUrl?: string;
-  infoUrl?: string;
+  info?: string;
 
   countryId: number;
   country?: Country;
 }
 
+export interface Season{
+  year: number;
+}
+
 export interface Event {
   id: number;
   name: string;
-  officialName: string;
-  year: number;
+  officialName?: string;
   startDate: string;
   endDate: string;
   isCancelled: boolean;
@@ -28,6 +31,9 @@ export interface Event {
 
   circuitId: number;
   circuit?: Circuit;
+
+  seasonId: number;
+  season?: Season;
 }
 
 

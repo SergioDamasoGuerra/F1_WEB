@@ -1,20 +1,18 @@
-html,
-body {
-  height: 100%;
+html, body {
   margin: 0;
 }
 
 #app-container {
-  height: 100vh;
+  min-height: 100vh; /* Permite que el contenedor crezca si hay mucho contenido */
   display: flex;
   flex-direction: column;
 }
 
-app-header {
-  flex-shrink: 0;
+app-header,
+app-footer {
+  flex-shrink: 0; /* Evita que el header o footer se aplasten */
 }
 
 main {
-  flex: 1;
-  min-height: 0;
+  flex: 1; /* Ocupa todo el espacio disponible en pantalla */
 }

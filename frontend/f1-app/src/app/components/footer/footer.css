@@ -1,0 +1,12 @@
+footer {
+  font-family: fantasy;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+  background-color: #fa3232;
+  min-height: 150px;
+  box-sizing: border-box;
+}
+

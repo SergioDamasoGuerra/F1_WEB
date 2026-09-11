@@ -1,0 +1,141 @@
+<main>
+  @if(mainEvent(); as main){
+
+    <section id="event-page-header">
+
+      <!-- PAST EVENT -->
+      @if(pastEvent(); as past){
+        <a
+          class="event-link"
+          [routerLink]="['/schedule', main.season?.year, slugify(past.name)]"
+        >
+          <img
+            class="country-flag"
+            [src]="past.flagUrl"
+            alt="PAST GP FLAG"
+          >
+          ← PAST
+        </a>
+      }@else{
+        <p>No past event</p>
+      }
+
+      <!-- MAIN EVENT -->
+      <div id="header-main-event">
+        <img
+          class="country-flag"
+          [src]="main.circuit?.country?.flagUrl"
+          [alt]="main.circuit?.country?.code"
+        >
+        <p>{{ main.officialName }}</p>
+        <img
+          class="country-flag"
+          [src]="main.circuit?.country?.flagUrl"
+          [alt]="main.circuit?.country?.code"
+        >
+      </div>
+
+      <!-- NEXT EVENT -->
+      @if (nextEvent(); as next) {
+        <a
+          class="event-link"
+          [routerLink]="['/schedule', main.season?.year, slugify(next.name)]"
+        >
+          <img
+            class="country-flag"
+            [src]="next.flagUrl"
+            alt="NEXT GP FLAG">
+          NEXT →
+        </a>
+      } @else {
+        <p>No next event</p>
+      }
+
+    </section>
+
+    <section id="event-page-content">
+
+      <div id="main-column">
+        <section id="event-info">
+          <span class="event-page-title fancy-title">Circuit Info:</span>
+          <div id="event-info-content">
+            <div id="circuit-image">
+              @if (main.circuit?.imageUrl) {
+                <img [src]="main.circuit?.imageUrl" [alt]="main.circuit?.name">
+              } @else {
+                <span>Circuit layout not loaded.</span>
+              }
+            </div>
+
+            <div id="circuit-info">
+
+              <span class="circuit-name">Name: {{ main.circuit?.name }}</span>
+              <span class="circuit-type">Type: {{ main.circuit?.type }}</span>
+              <span class="circuit-stat">
+                Length: 5740 m
+              </span>
+              <span class="circuit-stat">
+                Corners: 15 (8 R / 7 L)
+              </span>
+            </div>
+          </div>
+          <p id="circuit-description">
+            (MOCK DESCRIPTION !!!) El circuito de Madring o simplemente Madring, es un circuito urbano de carreras ubicado en la zona de IFEMA-Valdebebas, dentro de la ciudad de Madrid, capital de España. Será sede del Gran Premio de España de Fórmula 1 a partir de 2026, incorporándose al listado de circuitos que han albergado carreras de la «máxima categoría» desde 1950.
+            Es el primer circuito de carreras donde se dispute el Gran Premio de España de Fórmula 1 en Madrid, desde que se disputó en el circuito del Jarama en 1981, convirtiéndose en el séptimo circuito español que acoja una prueba de la categoría tras los circuitos de Pedralbes, Jarama, Montjuic, Jerez, Montmeló y Valencia. El circuito tiene un trazado de 5,474 km y es utilizado para albergar, además de Grandes Premios de Fórmula 1, las rondas de Fórmula 2 y Fórmula 3.[1
+          </p>
+        </section>
+
+        <section id="sessions-schedule">
+          <span id="session-title" class="event-page-title fancy-title">Sessions:</span>
+          <div id="sessions-content">
+            @for (day of days; track day.date) {
+              <div class="day">
+                <span class="day-date">{{ day.date | date: 'EEE dd MMM' | uppercase}}</span>
+                @for (session of day.sessions; track session.type) {
+                  <div class="session">
+                    <span>{{session.type}}</span>
+                    <span>
+                    {{session.startDate | date: 'HH:mm'}}
+                      -
+                      {{session.endDate | date: 'HH:mm'}}
+                  </span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </section>
+      </div>
+
+      <div id="sidebar-column">
+        <section id="event-page-buttons">
+          <button>
+            GO TO PREDICTIONS
+          </button>
+          <button>
+            GO TO FORUMS
+          </button>
+        </section>
+
+        <section id="event-stats">
+          <span class="event-page-title fancy-title">Stats:</span>
+          <div id="event-stats-content">
+            <!-- stats de prueba -->
+            <span class="event-stat">(MOCK STATS !!!)</span>
+            <span class="event-stat">Fastest Lap (Race): 1:10,549 Lewis Hamilton (2019)</span>
+            <span class="event-stat">Fastest Lap (Qualy): 1:08,211 Max Verstappen (2021)</span>
+            <span class="event-stat">Safety Car probability: 38%</span>
+            <span class="event-stat">Most wins: Lewis Hamilton (5)</span>
+            <span class="event-stat">Most poles: Charles Leclerc (3)</span>
+            <span class="event-stat">Most wins (constructor): Mercedes (6)</span>
+          </div>
+        </section>
+      </div>
+
+    </section>
+
+
+  }@else{
+    <p> Event not loaded.</p>
+  }
+</main>

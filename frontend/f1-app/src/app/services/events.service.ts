@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Event } from '../models/event';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { EventNeighbors } from '../models/event-page.model';
 
 @Injectable({
   providedIn: 'root',
@@ -22,5 +23,11 @@ export class EventsService {
 
   getAllSeasonYears(): Observable<{ year: number }[]> {
     return this.http.get<{ year: number }[]>(`${this.eventsUrl}/season-years`);
+  }
+
+  getEventWithNeighbors(year: number, name: string): Observable<EventNeighbors> {
+    return this.http.get<EventNeighbors>(`${this.eventsUrl}/neighbors`, {
+      params: { year, name },
+    });
   }
 }

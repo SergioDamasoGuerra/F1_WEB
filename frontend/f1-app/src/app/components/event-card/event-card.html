@@ -58,7 +58,7 @@
         </div>
       </div>
 
-      <a [routerLink]="['/event', event.id]" class="see-event">
+      <a [routerLink]="['/schedule', event.season?.year, slugify(event.name)]" class="see-event">
         See Event
       </a>
 

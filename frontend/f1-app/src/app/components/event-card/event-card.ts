@@ -3,6 +3,8 @@ import { Event } from '../../models/event';
 import { RouterLink } from '@angular/router';
 import { DatePipe, NgClass, UpperCasePipe } from '@angular/common';
 import { capitalizeText, formatDateDDMMM } from '../../config/utils';
+import { slugify } from '../../utils/slug.utils';
+
 
 @Component({
   selector: 'app-event-card',
@@ -14,4 +16,5 @@ export class EventCard {
   @Input() event!: Event;
   protected readonly capitalizeText = capitalizeText;
   protected readonly formatDateDDMMM = formatDateDDMMM;
+  protected readonly slugify = slugify;
 }

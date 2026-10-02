@@ -3,16 +3,16 @@ import {prisma} from '../config/prisma.js'
 import {calculateEventStatus} from "../utils/event-status.util.js";
 
 function parseUrlToEventName(urlParam: string): string {
-    // 1. Normalizamos a formato de palabras con mayúscula inicial (Title Case)
-    // ej: "pre-season-testing" -> "Pre Season Testing"
     const titleCased = urlParam
         .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
         .join(' ');
 
-    // 2. Corregimos los casos especiales que SÍ llevan guión en la BD
-    // "Pre Season Testing" -> "Pre-Season Testing"
-    return titleCased.replace(/Pre Season/g, 'Pre-Season');
+    return titleCased
+        .replace(/Pre Season/g, 'Pre-Season')       // parches temporales hasta que implemente slugs en la BD
+        .replace(/Sao Paulo/g, 'São Paulo');
 }
 
 export const getEvents = async (req: Request, res: Response) => {

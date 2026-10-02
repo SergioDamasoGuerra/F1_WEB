@@ -1,8 +1,10 @@
 export function slugify(text: string): string {
   return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Elimina tildes y diacríticos
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '') // Elimina caracteres especiales
-    .replace(/[\s_-]+/g, '-') // Reemplaza espacios y guiones bajos por un solo guion
-    .replace(/^-+|-+$/g, ''); // Quita guiones al inicio y al final
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }

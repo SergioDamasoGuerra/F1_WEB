@@ -16,6 +16,9 @@ main {
 }
 
 .event-link{
+  text-decoration: none;
+  color: black;
+  font-weight: bold;
   border: solid 2px black;
   display: flex;
   flex-direction: column;
@@ -64,6 +67,7 @@ main {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  box-sizing: border-box;
 }
 
 #event-info-content{
@@ -81,10 +85,12 @@ main {
 }
 
 #circuit-image img{
+  width: 100%;
   max-width: 500px;
+  height: auto;
+  box-sizing: border-box;
   background-color: white;
   border-radius: 20px;
-  padding: 20px;
 }
 
 #circuit-info {
@@ -130,7 +136,7 @@ main {
 .day{
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 10px;
 }
 
@@ -178,5 +184,32 @@ main {
 @media (max-width: 1000px) {
   .event-link {
     display: none;
+  }
+}
+
+
+@media (max-width: 820px) {
+  main {
+    margin: 20px 15px;
+  }
+
+  #event-info-content {
+    grid-template-columns: 1fr;
+    margin: 0;
+    gap: 20px;
+  }
+
+  #sessions-content {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  #event-page-header {
+    padding: 15px;
+  }
+
+  #header-main-event p {
+    font-size: medium;
   }
 }

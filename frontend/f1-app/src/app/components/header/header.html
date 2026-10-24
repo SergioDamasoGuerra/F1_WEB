@@ -1,38 +1,85 @@
 <header>
-  <a routerLink="">
-    <img id="logo-header" src="images/f1-pixabay.png" alt="logo" >
-  </a>
+  <section id="vertical-menu">
+    <span>Menu:</span>
+    <button (click)="toggleVerticalMenu()">
+      ☰
+    </button>
+    @if(verticalMenuOpen){
+      <div id="vertical-menu-links">
+        <ul>
+          <li class="vertical-link">
+            <a id="f1live-vertical" (click)="toggleF1LiveMenu()"> F1 Live @if(!f1LiveMenuOpen){▼}@else{▲} </a>
+          </li>
+          @if (f1LiveMenuOpen) {
+            @for (link of f1LiveLinks; track link.name) {
+              <li class="f1-live-submenu vertical-link">
+                <a
+                  [routerLink]="link.route"
+                  (click)="verticalMenuOpen = false"
+                >
+                  {{ link.name }}
+                </a>
+              </li>
+            }
+          }
+          @for (link of mainNavLinks; track link.route) {
+            <li class="vertical-link">
+              <a
+                [routerLink]="link.route"
+                (click)="verticalMenuOpen = false"
+              >
+                  {{ link.name }}
+              </a>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  </section>
+
+  <section id="home-logo">
+    <span>F1 APP</span>
+    <a routerLink="">
+      <picture>
+        <!-- Logo para pantallas de 550px o menos -->
+        <source media="(max-width: 550px)" srcset="images/home-icon.png">
+
+        <!-- Logo por defecto para pantallas grandes -->
+        <img id="logo-header" src="images/f1-pixabay.png" alt="logo">
+      </picture>
+    </a>
+  </section>
 
   <nav>
     <ul>
-      <li>
-        <a class="navbar" (click)="toggleF1LiveMenu()"> F1 Live @if(!f1LiveMenuOpen){▶}@else{◀} </a>
-      </li>
-      @if(f1LiveMenuOpen) {
-        <div class="side-menu">
-          <li>
-            <a
-              class="navbar"
-              [routerLink]="['/standings', latestSeason()]"
-              (click)="f1LiveMenuOpen = false"
-            >
-              Standings
-            </a>
-          </li>
+      <li class="dropdown">
+        <a class="navbar" (click)="toggleF1LiveMenu()">
+          F1 Live @if(!f1LiveMenuOpen){▶}@else{◀}
+        </a>
 
+        @if (f1LiveMenuOpen) {
+          <div class="side-menu">
+            @for (link of f1LiveLinks; track link.name) {
+              <a
+                [routerLink]="link.route"
+                (click)="f1LiveMenuOpen = false"
+              >
+                {{ link.name }}
+              </a>
+            }
+          </div>
+        }
+      </li>
+
+      @if(!f1LiveMenuOpen) {
+        @for (link of mainNavLinks; track link.route) {
           <li>
-            <a
-              class="navbar"
-              [routerLink]="['/schedule', latestSeason()]"
-              (click)="f1LiveMenuOpen = false"
-            >
-              Schedule
+            <a class="navbar" [routerLink]="link.route">
+              {{ link.name }}
             </a>
           </li>
-        </div>
+        }
       }
-      <li><a class="navbar" routerLink="/forums">Forums</a></li>
-      <li><a class="navbar" id="navbar-last" routerLink="/minigames">Minigames</a></li>
     </ul>
   </nav>
 

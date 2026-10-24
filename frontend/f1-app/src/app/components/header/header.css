@@ -12,8 +12,18 @@ header {
   box-sizing: border-box;
 }
 
+#home-logo{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#home-logo span{
+  display: none;
+}
+
 #logo-header{
-  height: 120px;
+  max-height: 120px;
   width: auto;
   border-radius: 15px;
   corner-shape: bevel;
@@ -29,7 +39,7 @@ header {
 
 #user-header-img{
   max-height: 80px;
-  width: auto;
+  width: 90%;
   border-radius: 50%;
 }
 
@@ -37,7 +47,7 @@ nav{
   display: flex;
 }
 
-nav ul{
+nav ul {
   list-style: none;
   display: flex;
   margin: 0;
@@ -48,7 +58,7 @@ nav ul{
   display: inline-block;
   padding: 5px 30px;
   border-left: 2px solid white;
-  font-size: 30px;
+  font-size: x-large;
   transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   color: white;
 }
@@ -65,22 +75,166 @@ nav ul{
 
 .dropdown {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .side-menu {
-  top: 100%;
-  left: 0;
-
   display: flex;
   flex-direction: row;
+  align-items: center;
 
   background: white;
   border-radius: 20px;
-  padding: 10px;
-  margin-right: 10px;
+  padding: 5px 10px;
+  margin-left: 15px;
+
+  white-space: nowrap;
 }
 
 .side-menu a {
+  display: block;
+  padding: 5px 15px;
   color: black;
   font-size: 18px;
+}
+
+.f1-live-submenu{
+  display: block;
+  padding-left: 20px;
+}
+
+#vertical-menu{
+  display: none;
+  flex-direction: column;
+  position: relative;
+}
+#vertical-menu span{
+  font-size: large;
+  -webkit-text-stroke: 1px black;
+}
+#vertical-menu button{
+  padding: 5px;
+  border-radius: 5px;
+  background-color: #ffffff;
+  color: black;
+  font-weight: bold;
+}
+#vertical-menu-links {
+  position: absolute;
+  top: 100%;
+  left: -50%;
+  z-index: 1000;
+
+  padding: 5px 10px;
+
+  background-color: #bcbaba;
+  border-radius: 5px;
+  width: max-content;
+}
+#vertical-menu-links ul{
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.vertical-link a{
+  text-decoration: none;
+  color: black;
+  transition: 0.3s ease;
+}
+.vertical-link:hover{
+  transform: scale(1.05);
+  a {
+    color: red;
+  }
+}
+#f1live-vertical{
+  color: #ffffff;
+}
+
+/*
+Responsive
+*/
+
+@media (max-width: 1000px) {
+  .navbar{
+    font-size: large;
+  }
+}
+
+@media (max-width: 800px) {
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+
+  nav {
+    display: none;
+  }
+
+  header > a {
+    justify-self: center;
+  }
+
+  #vertical-menu {
+    display: flex;
+    justify-self: start; /* izquierda */
+  }
+
+  #user-header {
+    justify-self: end; /* derecha */
+  }
+}
+
+@media (max-width: 550px) {
+  #home-logo span{
+    display: flex;
+  }
+
+  #logo-header {
+    max-height: 50px;
+    width: auto;
+    border: none;
+  }
+
+  picture {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 550px) {
+  #user-header-img{
+    max-height: 50px;
+    width: auto;
+  }
+  #user-header span{
+    display: none;
+  }
+}
+
+@media (max-width: 270px){
+  header{
+    display: flex;
+    flex-direction: column;
+  }
+
+  #user-header{
+    order: 1;
+    margin-bottom: 15px;
+  }
+
+  #home-logo{
+    order: 2;
+  }
+
+  #vertical-menu{
+    order: 3;
+  }
+
 }

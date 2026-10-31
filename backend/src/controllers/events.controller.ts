@@ -117,7 +117,10 @@ export const getEventWithNeighbors = async (req: Request, res: Response) => {
 
         // Mapear para aplanar el flagUrl y hacer coincidir los nombres con el Frontend
         const responseData = {
-            currentEvent: currentEvent,
+            currentEvent: {
+                ...currentEvent,
+                status: calculateEventStatus(currentEvent.startDate, currentEvent.endDate, currentEvent.isCancelled),
+            },
             pastEvent: previousEvent ? {
                 name: previousEvent.name,
                 flagUrl: previousEvent.circuit?.country?.flagUrl,

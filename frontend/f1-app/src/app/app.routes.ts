@@ -6,6 +6,7 @@ import { Forums } from './pages/forums/forums';
 import { Schedule } from './pages/schedule/schedule';
 import { Login } from './pages/login/login';
 import { yearResolver } from './resolvers/year.resolver'
+import { EventPage } from './pages/event/event';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -36,6 +37,10 @@ export const routes: Routes = [
         path: ':year',
         component: Schedule,
         resolve: { year: yearResolver },
+      },
+      {
+        path: ':year/:name', // URL: /schedule/2026/monaco-gp -> página del evento
+        component: EventPage,
       },
     ],
   },

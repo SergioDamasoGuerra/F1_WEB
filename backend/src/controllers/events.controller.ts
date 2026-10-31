@@ -2,6 +2,19 @@ import type { Request, Response } from "express";
 import {prisma} from '../config/prisma.js'
 import {calculateEventStatus} from "../utils/event-status.util.js";
 
+function parseUrlToEventName(urlParam: string): string {
+    const titleCased = urlParam
+        .split('-')
+        .map(word =>
+            word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        )
+        .join(' ');
+
+    return titleCased
+        .replace(/Pre Season/g, 'Pre-Season')       // parches temporales hasta que implemente slugs en la BD
+        .replace(/Sao Paulo/g, 'São Paulo');
+}
+
 export const getEvents = async (req: Request, res: Response) => {
     try{
         const year = Number(req.query.year);
@@ -45,8 +58,8 @@ export const getEventWithNeighbors = async (req: Request, res: Response) => {
 
         if(!nameParam || typeof nameParam !== 'string') return res.status(400).json({ error: 'Parámetro name no válido' });
 
-         // Convertimos 'italian-grand-prix' -> 'italian grand prix' (o usa regex / mode: 'insensitive')
-        const formattedName = nameParam.replace(/-/g, ' ');
+        const formattedName = parseUrlToEventName(nameParam);
+
         const currentEvent = await prisma.event.findFirst({
             where: {
                 season: {
@@ -57,7 +70,11 @@ export const getEventWithNeighbors = async (req: Request, res: Response) => {
                     mode: 'insensitive' // Ignora mayúsculas y minúsculas
                 }
             },
-            include: {circuit: {include: {country: true}}},
+            include: {
+                circuit: {include: {country: true}},
+                season: true,
+                sessions: true,
+            },
         });
 
         if (!currentEvent) {
@@ -68,20 +85,30 @@ export const getEventWithNeighbors = async (req: Request, res: Response) => {
 
             // Evento inmediatamente anterior
             prisma.event.findFirst({
-                where: { startDate: { lt: currentEvent.startDate } },
+                where: {
+                    season: {
+                        year: yearParam,
+                    },
+                    startDate: { lt: currentEvent.startDate }
+                },
                 orderBy: { startDate: 'desc' },
                 select: {
-                    id: true,
+                    name: true,
                     circuit: { select: { country: { select: { flagUrl: true } } } },
                 },
             }),
 
             // Evento inmediatamente posterior
             prisma.event.findFirst({
-                where: { startDate: { gt: currentEvent.startDate } },
+                where: {
+                    season: {
+                        year: yearParam,
+                    },
+                    startDate: { gt: currentEvent.startDate }
+                },
                 orderBy: { startDate: 'asc' },
                 select: {
-                    id: true,
+                    name: true,
                     circuit: { select: { country: { select: { flagUrl: true } } } },
                 },
             }),
@@ -90,13 +117,16 @@ export const getEventWithNeighbors = async (req: Request, res: Response) => {
 
         // Mapear para aplanar el flagUrl y hacer coincidir los nombres con el Frontend
         const responseData = {
-            currentEvent: currentEvent,
+            currentEvent: {
+                ...currentEvent,
+                status: calculateEventStatus(currentEvent.startDate, currentEvent.endDate, currentEvent.isCancelled),
+            },
             pastEvent: previousEvent ? {
-                id: previousEvent.id,
+                name: previousEvent.name,
                 flagUrl: previousEvent.circuit?.country?.flagUrl,
             } : null,
             nextEvent: nextEvent ? {
-                id: nextEvent.id,
+                name: nextEvent.name,
                 flagUrl: nextEvent.circuit?.country?.flagUrl,
             } : null,
         };

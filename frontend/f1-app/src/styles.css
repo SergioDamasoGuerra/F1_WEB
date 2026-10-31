@@ -12,27 +12,30 @@ html, body, app-root {
 }
 
 .fancy-title {
-  --b: 6px;   /* control the border thickness */
-  --w: 80px;  /* control the width of the line*/
-  --g: 15px;  /* control the gap */
-  --c: #d30a0a;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 
-  width: fit-content;
-  padding: 0 1em;
-  line-height: 1.6em;
-  color: #fff;
-  background:
-    conic-gradient(from   45deg at left ,var(--c) 25%,#0000 0) 0,
-    conic-gradient(from -135deg at right,var(--c) 25%,#0000 0) 100%;
-  background-size: 51% 100%;
-  background-repeat: no-repeat;
-  border-image:
-    linear-gradient(
-      #0000      calc(50% - var(--b)/2),
-      var(--c) 0 calc(50% + var(--b)/2),
-      #0000    0)
-    1/0 var(--w)/calc(var(--w) + var(--g));
-  margin-inline: auto;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+
+  color: #000000;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.fancy-title::before,
+.fancy-title::after {
+  content: "";
+  flex: 1 1 0;
+  min-width: 0;
+  height: 6px;
+  background: #d30a0a;
+}
+
+.fancy-title span {
+  flex-shrink: 0;
 }
 
 

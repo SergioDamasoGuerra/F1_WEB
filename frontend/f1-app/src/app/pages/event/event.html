@@ -17,7 +17,7 @@
           ← PAST
         </a>
       }@else{
-        <p>No past event</p>
+        <p class="no-event event-link">No past<br> event</p>
       }
 
       <!-- MAIN EVENT -->
@@ -30,6 +30,7 @@
         <p>{{ main.officialName }}</p>
         <img
           class="country-flag"
+          id="right-country-flag"
           [src]="main.circuit?.country?.flagUrl"
           [alt]="main.circuit?.country?.code"
         >
@@ -48,16 +49,22 @@
           NEXT →
         </a>
       } @else {
-        <p>No next event</p>
+        <p class="no-event event-link">No next<br> event</p>
       }
 
     </section>
+
+    <span id="status" [ngClass]="'status-' + main.status">
+        {{ getStatusText() }}
+    </span>
 
     <section id="event-page-content">
 
       <div id="main-column">
         <section id="event-info">
-          <span class="event-page-title fancy-title">Circuit Info:</span>
+          <h2 class="fancy-title">
+            <span>Circuit Info:</span>
+          </h2>
           <div id="event-info-content">
             <div id="circuit-image">
               @if (main.circuit?.imageUrl) {
@@ -88,7 +95,9 @@
         </section>
 
         <section id="sessions-schedule">
-          <span id="session-title" class="event-page-title fancy-title">Sessions:</span>
+          <h2 class="fancy-title">
+            <span>Sessions</span>
+          </h2>
           <div id="sessions-content">
             @for (day of days; track day.date) {
               <div class="day">
@@ -120,7 +129,9 @@
         </section>
 
         <section id="event-stats">
-          <span class="event-page-title fancy-title">Stats:</span>
+          <h2 class="fancy-title">
+            <span>Stats:</span>
+          </h2>
           <div id="event-stats-content">
             <span class="coming-soon">Circuit statistics coming soon.</span>
 

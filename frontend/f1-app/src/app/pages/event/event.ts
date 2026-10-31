@@ -4,12 +4,12 @@ import {EventLinkButton} from '../../models/event-page.model'
 import { EventsService } from '../../services/events.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { slugify } from '../../utils/slug.utils';
-import { DatePipe, UpperCasePipe } from '@angular/common';
+import { DatePipe, NgClass, UpperCasePipe } from '@angular/common';
 import { Session, SessionDay } from '../../models/session';
 
 @Component({
   selector: 'app-event',
-  imports: [RouterLink, DatePipe, UpperCasePipe],
+  imports: [RouterLink, DatePipe, UpperCasePipe, NgClass],
   templateUrl: './event.html',
   styleUrl: './event.css',
 })
@@ -68,5 +68,17 @@ export class EventPage implements OnInit {
     }));
   }
 
-
+  protected getStatusText() {
+    // status: "done" | "current" | "upcoming" | "cancelled"
+    if (this.mainEvent()?.status == 'done') {
+      return 'EVENT DONE';
+    } else if (this.mainEvent()?.status == 'current') {
+      return 'CURRENT EVENT!';
+    } else if (this.mainEvent()?.status == 'upcoming') {
+      return 'UPCOMING EVENT';
+    } else {
+      // cancelled
+      return 'EVENT CANCELLED';
+    }
+  }
 }
